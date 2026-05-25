@@ -35,7 +35,7 @@ export default async function AboutPage({ params }) {
 
   return (
     <div className="bg-bg-primary">
-      <div className="relative h-[820px] w-full flex items-center justify-center overflow-hidden">
+      <div className="relative h-[820px] w-full flex items-center justify-center overflow-hidden max-sm:h-[80vh]">
         {acf.hero_image?.url && (
           <div className="absolute inset-0 z-0">
             <Image

@@ -32,7 +32,7 @@ export default function HeroSection({ children }) {
     <motion.section
       ref={ref}
       style={{ y }}
-      className="relative h-[800px] max-7xl bg-bg-primary w-full flex items-start overflow-hidden"
+      className="relative h-[800px] max-7xl bg-bg-primary w-full flex items-start overflow-hidden max-sm:h-[80vh]"
     >
       {children}
     </motion.section>
