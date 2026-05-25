@@ -24,7 +24,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "sklep.local",
+        hostname: "cms.carpgate.com",
         pathname: "/wp-content/uploads/**",
       },
     ],
