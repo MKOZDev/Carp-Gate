@@ -51,7 +51,7 @@ export default async function HomePage({ params }) {
                       alt={cat.image.alt || cat.name}
                       fill
                       className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 group-hover:scale-110 transition-all duration-500"
-                      sizes="56px"
+                      sizes="200px"
                     />
                   ) : (
                     <div className="w-14 h-14 rounded-xl bg-gray-200 flex items-center justify-center">
