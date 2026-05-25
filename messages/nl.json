@@ -1,0 +1,90 @@
+{
+  "nav": {
+    "shop": "Winkel",
+    "about": "Over ons",
+    "contact": "Contact",
+    "cart": "Winkelwagen"
+  },
+  "hero": {
+    "title": "Welkom bij Carp Gate",
+    "subtitle": "Jouw specialist in karpervissen.",
+    "cta": "Bekijk producten"
+  },
+  "aboutus": {
+    "title": "Ons verhaal",
+    "subtitle": "PASSIE VOOR DE VANGST. TOEWIJDING AAN DE UITRUSTING.",
+    "text": "CarpGate is een merk dat hoogwaardige visuitrusting en accessoires aanbiedt voor visliefhebbers, met een bijzondere focus op het vissen op karper. Het assortiment omvat artikelen van gerenommeerde merken, maar ook eigen ontwerpen die zijn ontwikkeld om vissers te helpen de beste resultaten te behalen.",
+    "cta": "Lees meer"
+  },
+  "home": {
+    "catalog": "Productcatalogus",
+    "featuredAccent": "Aanbevolen producten",
+    "featured": "Selectie van de elite",
+    "categoriesAccent": "Winkelen per categorie",
+    "categories": "Alles wat je nodig hebt, direct bij de bank.",
+    "viewAll": "Alles bekijken"
+  },
+  "product": {
+    "viewProduct": "Bekijk product",
+    "addToCart": "In winkelwagen",
+    "added": "✓ Toegevoegd",
+    "sale": "Aanbieding",
+    "inStock": "✓ Op voorraad",
+    "outOfStock": "✗ Niet beschikbaar",
+    "quantity": "Aantal",
+    "selectAll": "Selecteer alle opties",
+    "description": "Beschrijving"
+  },
+  "cart": {
+    "title": "Winkelwagen",
+    "empty": "Je winkelwagen is leeg.",
+    "backToShop": "Terug naar de winkel",
+    "total": "Totaal",
+    "checkout": "Afrekenen →",
+    "secureCheckout": "Veilig betalen via WooCommerce.",
+    "remove": "Verwijderen",
+    "pieces": "stuk"
+  },
+  "shop": {
+    "title": "Winkel",
+    "found": "Gevonden: {count} producten",
+    "filterTitle": "Filteren",
+    "filterPrice": "Prijs (€)",
+    "priceFrom": "Van",
+    "priceTo": "Tot",
+    "filterCategory": "Categorie",
+    "allCategories": "Alle categorieën",
+    "filterAvailability": "Beschikbaarheid",
+    "onSaleOnly": "Alleen aanbiedingen",
+    "inStockOnly": "Alleen op voorraad",
+    "applyFilter": "Filteren",
+    "resetFilter": "Wissen",
+    "noProducts": "Geen producten gevonden.",
+    "sortBy": "Sorteren op",
+    "sortDefault": "Standaard",
+    "sortNameAsc": "Naam A-Z",
+    "sortNameDesc": "Naam Z-A",
+    "sortPriceAsc": "Prijs laag-hoog",
+    "sortPriceDesc": "Prijs hoog-laag"
+  },
+  "overons": {
+    "cta": "Bekijk winkel"
+  },
+  "footer": {
+    "tagline": "Jouw specialist in karpervissen.",
+    "navigation": "Navigatie",
+    "info": "Informatie",
+    "privacy": "Privacybeleid",
+    "terms": "Algemene voorwaarden",
+    "returns": "Retourneren",
+    "contact": "Contact",
+    "shop": "Winkel",
+    "about": "Over ons",
+    "rights": "Alle rechten voorbehouden.",
+    "cart": "Winkelwagen"
+  },
+  "contact": {
+    "title": "Neem contact op",
+    "subtitle": "Wij helpen je graag"
+  }
+}

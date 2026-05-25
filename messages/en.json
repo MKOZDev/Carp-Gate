@@ -1,0 +1,90 @@
+{
+  "nav": {
+    "shop": "Shop",
+    "about": "About us",
+    "contact": "Contact",
+    "cart": "Cart"
+  },
+  "hero": {
+    "title": "Welcome to Carp Gate",
+    "subtitle": "Your specialist in carp fishing.",
+    "cta": "View products"
+  },
+  "aboutus": {
+    "title": "Our Story",
+    "subtitle": "PASSION FOR THE CATCH. DEDICATION TO GEAR.",
+    "text": "CarpGate is a brand that offers high-quality fishing gear and accessories for fishing enthusiasts, with a particular focus on carp fishing. The product range includes items from renowned brands as well as proprietary solutions designed to help anglers achieve the best results.",
+    "cta": "Read more"
+  },
+  "home": {
+    "catalog": "Product catalog",
+    "featuredAccent": "Featured products",
+    "featured": "Elite selection",
+    "categoriesAccent": "Shop by Category",
+    "categories": "Everything you need, bank-side.",
+    "viewAll": "View all"
+  },
+  "product": {
+    "viewProduct": "View product",
+    "addToCart": "Add to cart",
+    "added": "✓ Added",
+    "sale": "Sale",
+    "inStock": "✓ In stock",
+    "outOfStock": "✗ Out of stock",
+    "quantity": "Quantity",
+    "selectAll": "Select all options",
+    "description": "Description"
+  },
+  "cart": {
+    "title": "Cart",
+    "empty": "Your cart is empty.",
+    "backToShop": "Back to shop",
+    "total": "Total",
+    "checkout": "Checkout →",
+    "secureCheckout": "Secure payment via WooCommerce.",
+    "remove": "Remove",
+    "pieces": "pc"
+  },
+  "shop": {
+    "title": "Shop",
+    "found": "Found: {count} products",
+    "filterTitle": "Filter",
+    "filterPrice": "Price (€)",
+    "priceFrom": "From",
+    "priceTo": "To",
+    "filterCategory": "Category",
+    "allCategories": "All categories",
+    "filterAvailability": "Availability",
+    "onSaleOnly": "Sale items only",
+    "inStockOnly": "In stock only",
+    "applyFilter": "Apply filter",
+    "resetFilter": "Reset",
+    "noProducts": "No products found.",
+    "sortBy": "Sort by",
+    "sortDefault": "Default",
+    "sortNameAsc": "Name A-Z",
+    "sortNameDesc": "Name Z-A",
+    "sortPriceAsc": "Price low-high",
+    "sortPriceDesc": "Price high-low"
+  },
+  "overons": {
+    "cta": "View shop"
+  },
+  "footer": {
+    "tagline": "Your specialist in carp fishing.",
+    "navigation": "Navigation",
+    "info": "Information",
+    "privacy": "Privacy policy",
+    "terms": "Terms & conditions",
+    "returns": "Returns",
+    "contact": "Contact",
+    "shop": "Shop",
+    "about": "About us",
+    "rights": "All rights reserved.",
+    "cart": "Cart"
+  },
+  "contact": {
+    "title": "Get in touch",
+    "subtitle": "We are happy to help"
+  }
+}
