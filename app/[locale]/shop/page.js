@@ -1,6 +1,7 @@
 import { getProducts, getCategories } from "@/lib/api";
 import { getTranslations } from "next-intl/server";
 import ShopClient from "./ShopClient";
+export const revalidate = 3600;
 
 export async function generateMetadata({ params }) {
   const { locale } = await params;

@@ -6,6 +6,19 @@ import AddToCartButton from "@/components/ProductElements/AddToCartButton";
 import ProductGrid from "@/components/ProductElements/ProductGrid";
 import ProductGallery from "@/components/ProductElements/ProductGallery";
 import Link from "next/link";
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  const [nlProducts, enProducts] = await Promise.all([
+    getProducts({ per_page: 100 }, "nl"),
+    getProducts({ per_page: 100 }, "en"),
+  ]);
+
+  return [
+    ...nlProducts.products.map((p) => ({ locale: "nl", slug: p.slug })),
+    ...enProducts.products.map((p) => ({ locale: "en", slug: p.slug })),
+  ];
+}
 
 export async function generateMetadata({ params }) {
   const { slug, locale } = await params;

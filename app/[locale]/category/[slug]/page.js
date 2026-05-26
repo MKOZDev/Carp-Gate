@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import ProductGrid from "@/components/ProductElements/ProductGrid";
 import Pagination from "@/components/ui/Pagination";
 import Link from "next/link";
+export const revalidate = 3600;
 
 export async function generateMetadata({ params }) {
   const { slug, locale } = await params;
