@@ -9,6 +9,7 @@ import Navbar from "@/components/layout/Navbar";
 
 import { getCategories, getMenu } from "@/lib/api";
 import ScrollToTop from "@/components/ui/ScrollToTop";
+import PageLoader from "@/components/ui/PageLoader";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -46,6 +47,7 @@ export default async function LocaleLayout({ children, params }) {
       <body className="min-h-screen flex flex-col bg-bg-primary text-text-primary antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <CartProvider>
+            <PageLoader></PageLoader>
             <Navbar
               initialCategories={categories}
               initialMenuItems={menuItems}
