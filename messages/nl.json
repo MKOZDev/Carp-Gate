@@ -19,9 +19,9 @@
   "home": {
     "catalog": "Productcatalogus",
     "featuredAccent": "Aanbevolen producten",
-    "featured": "Selectie van de elite",
+    "featured": "POPULAIRE CATEGORIEËN",
     "categoriesAccent": "Winkelen per categorie",
-    "categories": "Alles wat je nodig hebt, direct bij de bank.",
+    "categories": "Alles wat je nodig hebt direct op voorraad.",
     "viewAll": "Alles bekijken"
   },
   "product": {
@@ -86,5 +86,21 @@
   "contact": {
     "title": "Neem contact op",
     "subtitle": "Wij helpen je graag"
+  },
+  "reviews": {
+    "title": "Klantbeoordelingen",
+    "writeReview": "Schrijf een beoordeling",
+    "reviewSingle": "beoordeling",
+    "reviewPlural": "beoordelingen",
+    "verified": "Geverifieerde aankoop",
+    "ratingLabel": "Beoordeling",
+    "namePlaceholder": "Uw naam",
+    "emailPlaceholder": "Uw e-mailadres",
+    "reviewPlaceholder": "Uw ervaring met dit product...",
+    "submit": "Versturen",
+    "sending": "Bezig...",
+    "success": "Bedankt! Uw beoordeling wordt beoordeeld.",
+    "error": "Er is iets misgegaan. Probeer het opnieuw.",
+    "noReviews": "Nog geen beoordelingen. Wees de eerste!"
   }
 }

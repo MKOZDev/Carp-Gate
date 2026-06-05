@@ -1,12 +1,19 @@
 import { getTranslations } from "next-intl/server";
-import { getProducts, getCategories, decodeHtml } from "@/lib/api";
+import {
+  getProducts,
+  getCategories,
+  getLatestReviews,
+  decodeHtml,
+} from "@/lib/api";
 import Hero from "@/components/sections/Hero/Hero";
-import ProductGrid from "@/components/ProductElements/ProductGrid";
 import Link from "next/link";
 import Image from "next/image";
 import AboutUs from "@/components/sections/AboutUs";
 import HeadingBox from "@/components/ui/HeadingBox";
 import Wrapper from "@/components/layout/Wrapper";
+import ProductGrid from "@/components/ProductElements/ProductGrid";
+import ReviewsSection from "@/components/sections/ReviewsSection";
+import Newsletter from "@/components/sections/Newsletter";
 
 export async function generateMetadata({ params }) {
   const { locale } = await params;
@@ -17,18 +24,21 @@ export async function generateMetadata({ params }) {
 export default async function HomePage({ params }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "home" });
+  const tR = await getTranslations({ locale, namespace: "reviews" });
   const p = locale === "en" ? "/en" : "";
 
-  const [{ products }, { products: featured }, categories] = await Promise.all([
-    getProducts({ per_page: 8 }, locale),
-    getProducts({ featured: true, per_page: 4 }, locale),
-    getCategories(locale),
-  ]);
-
+  const [{ products }, { products: featured }, categories, reviews] =
+    await Promise.all([
+      getProducts({ per_page: 8 }, locale),
+      getProducts({ featured: true, per_page: 4 }, locale),
+      getCategories(locale),
+      getLatestReviews(12),
+    ]);
   return (
     <>
       <Hero locale={locale} />
-      <AboutUs locale={locale}></AboutUs>
+
+      <AboutUs locale={locale} />
 
       {categories.length > 0 && (
         <section className="bg-bg-secondary py-24 max-sm:py-8">
@@ -36,7 +46,7 @@ export default async function HomePage({ params }) {
             <HeadingBox
               accent={t("categoriesAccent")}
               title={t("categories")}
-            ></HeadingBox>
+            />
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {categories.map((cat) => (
                 <Link
@@ -44,7 +54,7 @@ export default async function HomePage({ params }) {
                   href={`${p}/category/${cat.slug}`}
                   className="group relative h-48 bg-carp-green rounded-sm overflow-hidden flex flex-col items-center justify-center border border-white/5 hover:border-carp-accent/50 transition-all duration-300"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60 z-10"></div>
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60 z-10" />
                   {cat.image?.src ? (
                     <Image
                       src={cat.image.src}
@@ -80,43 +90,17 @@ export default async function HomePage({ params }) {
         </section>
       )}
 
-      {/* <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 border-t border-gray-100">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-bold">{t("catalog")}</h2>
-          <Link
-            href={`${p}/shop`}
-            className="text-sm text-gray-500 hover:text-gray-900 flex items-center gap-1"
-          >
-            {t("viewAll")}
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-              />
-            </svg>
-          </Link>
-        </div>
-        <ProductGrid products={products} locale={locale} />
-      </section> */}
-
       {featured.length > 0 && (
         <section className="bg-bg-primary py-24 max-sm:py-8">
           <Wrapper>
-            <HeadingBox
-              accent={t("featuredAccent")}
-              title={t("featured")}
-            ></HeadingBox>
+            <HeadingBox accent={t("featuredAccent")} title={t("featured")} />
             <ProductGrid products={featured} locale={locale} />
           </Wrapper>
         </section>
       )}
+
+      <Newsletter locale={locale} />
+      <ReviewsSection reviews={reviews} title={tR("title")} />
     </>
   );
 }

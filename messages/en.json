@@ -19,9 +19,9 @@
   "home": {
     "catalog": "Product catalog",
     "featuredAccent": "Featured products",
-    "featured": "Elite selection",
+    "featured": "POPULAR CATEGORIES",
     "categoriesAccent": "Shop by Category",
-    "categories": "Everything you need, bank-side.",
+    "categories": "Everything you need is in stock.",
     "viewAll": "View all"
   },
   "product": {
@@ -86,5 +86,21 @@
   "contact": {
     "title": "Get in touch",
     "subtitle": "We are happy to help"
+  },
+  "reviews": {
+    "title": "Customer reviews",
+    "writeReview": "Write a review",
+    "reviewSingle": "review",
+    "reviewPlural": "reviews",
+    "verified": "Verified purchase",
+    "ratingLabel": "Rating",
+    "namePlaceholder": "Your name",
+    "emailPlaceholder": "Your email address",
+    "reviewPlaceholder": "Your experience with this product...",
+    "submit": "Submit",
+    "sending": "Sending...",
+    "success": "Thank you! Your review is pending approval.",
+    "error": "Something went wrong. Please try again.",
+    "noReviews": "No reviews yet. Be the first!"
   }
 }

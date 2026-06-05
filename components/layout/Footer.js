@@ -3,6 +3,107 @@ import Image from "next/image";
 import { getCategories, getMenu } from "@/lib/api";
 import { Mail, Phone, MapPin } from "lucide-react";
 
+function PaymentBadge({ children, bg = "white" }) {
+  return (
+    <div
+      className="h-8 px-2 rounded-md flex items-center justify-center"
+      style={{ background: bg, minWidth: "48px" }}
+    >
+      {children}
+    </div>
+  );
+}
+
+function MollieIcon() {
+  return (
+    <PaymentBadge>
+      <svg
+        viewBox="0 0 60 24"
+        className="h-4 w-auto"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <text
+          x="2"
+          y="18"
+          fontSize="16"
+          fontWeight="800"
+          fontFamily="Arial, sans-serif"
+          fill="#000"
+        >
+          mollie
+        </text>
+      </svg>
+    </PaymentBadge>
+  );
+}
+
+function VisaIcon() {
+  return (
+    <PaymentBadge>
+      <svg
+        viewBox="0 0 38 16"
+        className="h-4 w-auto"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <text
+          x="0"
+          y="13"
+          fontSize="14"
+          fontWeight="800"
+          fontFamily="Arial, sans-serif"
+          fill="#1A1F71"
+          fontStyle="italic"
+          letterSpacing="1"
+        >
+          VISA
+        </text>
+      </svg>
+    </PaymentBadge>
+  );
+}
+
+function MastercardIcon() {
+  return (
+    <PaymentBadge>
+      <svg
+        viewBox="0 0 38 24"
+        className="h-5 w-auto"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle cx="14" cy="12" r="10" fill="#EB001B" />
+        <circle cx="24" cy="12" r="10" fill="#F79E1B" />
+        <path
+          d="M19 4.8a10 10 0 0 1 0 14.4A10 10 0 0 1 19 4.8z"
+          fill="#FF5F00"
+        />
+      </svg>
+    </PaymentBadge>
+  );
+}
+
+function IDealIcon() {
+  return (
+    <PaymentBadge>
+      <svg
+        viewBox="0 0 40 24"
+        className="h-4 w-auto"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <text
+          x="2"
+          y="17"
+          fontSize="13"
+          fontWeight="800"
+          fontFamily="Arial, sans-serif"
+          fill="#CC0066"
+        >
+          iDEAL
+        </text>
+      </svg>
+    </PaymentBadge>
+  );
+}
+
 export default async function Footer({ locale = "nl" }) {
   const p = locale === "en" ? "/en" : "";
 
@@ -29,10 +130,20 @@ export default async function Footer({ locale = "nl" }) {
                 CARP GATE
               </span>
             </Link>
-            <p className="text-text-secondary text-sm leading-relaxed ">
+            {/* <p className="text-text-secondary text-xs leading-relaxed mb-4">
               {locale === "en"
                 ? "Field-tested carp materials. Europe-wide shipping from Utrecht."
                 : "In het veld geteste karpermaterialen. Europa-breed verzonden vanuit Utrecht."}
+            </p> */}
+            <p className="text-text-secondary text-xs font-bold leading-relaxed mb-2">
+              {locale === "en"
+                ? "Order carp fishing gear online"
+                : "Karperspullen online bestellen"}
+            </p>
+            <p className="text-text-secondary text-xs leading-relaxed">
+              {locale === "en"
+                ? "There are many different types of carp fishing gear that you can order online from carGate. We’ve organized our online store as efficiently as possible so you can always find the right gear quickly and easily. We also offer competitive shipping rates. This means you can have packages of hooks and other tackle delivered via PostNL. Larger items are shipped via DPD. We have a wide range of carp fishing gear, from hooks, boilies, and rig rings to tents, boats, and power banks. If you can think of anything related to carp fishing, chances are you’ll find it in our selection."
+                : "Er zijn heel veel soorten karperspullen die je online kunt bestellen bij carGate. We hebben onze webshop zo efficiënt mogelijk ingedeeld zodat jij altijd de juiste spullen goed en snel kunt vinden. Ook bieden we scherpe tarieven voor verzending. Zo kun je pakjes haken en overige tackle ook gewoon laten bezorgen met PostNL. Grotere items gaan met DPD  mee. We hebben een groot assortiment karperspullen van haken, boilies, rig rings tot tenten, boten en powerbanks. Als je kan bedenken dat het met karpervissen te maken heeft, is de kans groot dat je het in ons assortiment terug vind."}
             </p>
           </div>
 
@@ -75,51 +186,57 @@ export default async function Footer({ locale = "nl" }) {
           </div>
 
           {/* Kolumna 4 — Contact */}
-          <div className="space-y-8">
-            <div>
-              <h3 className="text-xs font-semibold uppercase tracking-widest text-text-secondary mb-5">
-                Contact
-              </h3>
-              <ul className="space-y-3">
-                <li>
-                  <a
-                    href="mailto:carpgatee@gmail.com"
-                    className="flex items-center gap-2 text-sm text-text-secondary hover:text-text-accent transition-colors"
-                  >
-                    <Mail size={14} />
-                    carpgatee@gmail.com
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="tel:+31652368685"
-                    className="flex items-center gap-2 text-sm text-text-secondary hover:text-text-accent transition-colors"
-                  >
-                    <Phone size={14} />
-                    +31652368685
-                  </a>
-                </li>
-                <li className="flex items-center gap-2 text-sm text-text-secondary">
-                  <MapPin size={14} className="shrink-0" />
-                  Zwaardvegersgaarde 48, 2542 TE Den Haag, Holandia
-                </li>
-              </ul>
-            </div>
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-widest text-text-secondary mb-5">
+              Contact
+            </h3>
+            <ul className="space-y-3">
+              <li>
+                <a
+                  href="mailto:carpgatee@gmail.com"
+                  className="flex items-center gap-2 text-sm text-text-secondary hover:text-text-accent transition-colors"
+                >
+                  <Mail size={14} />
+                  carpgatee@gmail.com
+                </a>
+              </li>
+              <li>
+                <a
+                  href="tel:+31652368685"
+                  className="flex items-center gap-2 text-sm text-text-secondary hover:text-text-accent transition-colors"
+                >
+                  <Phone size={14} />
+                  +31652368685
+                </a>
+              </li>
+              <li className="flex items-center gap-2 text-sm text-text-secondary">
+                <MapPin size={14} className="shrink-0" />
+                Zwaardvegersgaarde 48, 2542 TE Den Haag, Nederland
+              </li>
+            </ul>
           </div>
         </div>
 
-        {/* Dolna linia */}
-        <div className="border-t border-text-secondary/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-center text-text-secondary uppercase tracking-widest">
-            © {new Date().getFullYear()} Carp Gate BV ·{" "}
-            {locale === "en"
-              ? "All rights reserved"
-              : "Alle rechten voorbehouden"}
-            .
-          </p>
+        <div className="border-t border-text-secondary/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="flex flex-col items-center sm:items-start gap-4">
+            <p className="text-xs text-center sm:text-left text-text-secondary uppercase tracking-widest">
+              © {new Date().getFullYear()} Carp Gate BV ·{" "}
+              {locale === "en"
+                ? "All rights reserved"
+                : "Alle rechten voorbehouden"}
+              .
+            </p>
+
+            <div className="flex items-center gap-2 flex-wrap">
+              <MollieIcon />
+              <VisaIcon />
+              <MastercardIcon />
+              <IDealIcon />
+            </div>
+          </div>
+
           <Link
             href="https://www.mkozdev.com"
-            className="footer-bottom-img d-f al-c"
             target="_blank"
             rel="noopener noreferrer"
           >

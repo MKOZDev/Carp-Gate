@@ -16,7 +16,7 @@ import Wrapper from "@/components/layout/Wrapper";
 import HeadingBox from "@/components/ui/HeadingBox";
 import FaqItem from "@/components/ui/FaqItem";
 import Link from "next/link";
-import { getMenu, getReviews, getFaqs, getSocialMedia } from "@/lib/api";
+import { getMenu, getFaqs, getSocialMedia } from "@/lib/api";
 import LazyMap from "@/components/ui/LazyMap";
 
 export async function generateMetadata({ params }) {
@@ -36,9 +36,8 @@ export default async function ContactPage({ params }) {
   const p = locale === "en" ? "/en" : "";
   const isEn = locale === "en";
 
-  const [footerMenu, reviews, faqs, socialMedia] = await Promise.all([
+  const [footerMenu, faqs, socialMedia] = await Promise.all([
     getMenu(locale, locale === "en" ? "footer-menu-en" : "footer-menu-nl"),
-    getReviews(locale),
     getFaqs(locale),
     getSocialMedia(),
   ]);
@@ -89,52 +88,27 @@ export default async function ContactPage({ params }) {
     {
       icon: Phone,
       label: isEn ? "Phone" : "Telefoon",
-      value: "+31 30 000 0000",
-      href: "tel:+31300000000",
+      value: "+31652368685",
+      href: "tel:+31652368685",
     },
     {
       icon: MapPin,
       label: isEn ? "Address" : "Adres",
-      value: "Utrechtseweg 142, Utrecht",
-      href: "https://maps.google.com/?q=Utrechtseweg+142+Utrecht",
+      value: "Zwaardvegersgaarde 48, 2542 TE Den Haag, Nederland",
+      href: "https://maps.app.goo.gl/nXC9CfgmcuwF5CYt5",
     },
     {
       icon: Clock,
       label: isEn ? "Opening hours" : "Openingstijden",
-      value: isEn ? "Mon-Fri: 9:00 - 17:00" : "Ma-Vr: 9:00 - 17:00",
+      value: isEn
+        ? "Mon-Fri: 9:00-18:00\nSat: 9:00-17:00\nSun: Closed"
+        : "Ma-Vr: 9:00-17:00\nZa: 9:00-17:00\nZo: Gesloten",
       href: null,
     },
   ];
 
-  const staticReviews = [
-    {
-      name: "Mark V.",
-      text: isEn
-        ? "Fast delivery and great advice!"
-        : "Snelle levering en goed advies!",
-      stars: 5,
-    },
-    {
-      name: "Jan K.",
-      text: isEn
-        ? "Top quality products, always helpful."
-        : "Top kwaliteit, altijd behulpzaam.",
-      stars: 5,
-    },
-    {
-      name: "Peter D.",
-      text: isEn
-        ? "Best carp shop in the Netherlands."
-        : "Beste karperwinkel van Nederland.",
-      stars: 5,
-    },
-  ];
-
-  const displayReviews = reviews.length > 0 ? reviews : staticReviews;
-
   return (
     <div className="bg-bg-primary min-h-screen">
-      {/* Hero */}
       <div className="bg-bg-secondary border-b border-text-secondary/10 py-20 max-sm:py-12">
         <Wrapper>
           <HeadingBox title={t("subtitle")} accent={t("title")} />
@@ -170,7 +144,6 @@ export default async function ContactPage({ params }) {
       </div>
 
       <Wrapper>
-        {/* Formularz — pełna szerokość */}
         <div className="py-16 max-sm:py-8 space-y-4">
           <ContactForm locale={locale} />
           <p className="text-xs text-text-secondary/50 flex items-center gap-2 flex-wrap">
@@ -187,9 +160,7 @@ export default async function ContactPage({ params }) {
           </p>
         </div>
 
-        {/* Grid z kartami pod formularzem */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-          {/* Dane kontaktowe */}
           <div className="bg-bg-secondary rounded-2xl p-6 border border-text-secondary/10 space-y-4">
             <h3 className="text-xs font-semibold uppercase tracking-widest text-text-secondary">
               {isEn ? "Contact details" : "Contactgegevens"}
@@ -210,14 +181,19 @@ export default async function ContactPage({ params }) {
                       {value}
                     </a>
                   ) : (
-                    <p className="text-sm text-text-primary">{value}</p>
+                    <p className="text-sm text-text-primary">
+                      {value.split("\n").map((line, i) => (
+                        <span key={i} className="block">
+                          {line}
+                        </span>
+                      ))}
+                    </p>
                   )}
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Social media */}
           <div className="bg-bg-secondary rounded-2xl p-6 border border-text-secondary/10">
             <h3 className="text-xs font-semibold uppercase tracking-widest text-text-secondary mb-4">
               Social Media
@@ -246,7 +222,6 @@ export default async function ContactPage({ params }) {
             </div>
           </div>
 
-          {/* Szybka pomoc */}
           <div className="bg-bg-secondary rounded-2xl p-6 border border-text-secondary/10">
             <div className="flex items-center gap-2 mb-3">
               <HelpCircle size={14} className="text-text-accent" />
@@ -257,7 +232,7 @@ export default async function ContactPage({ params }) {
             <p className="text-xs text-text-secondary mb-4">
               {isEn
                 ? "Before you write to us, check the most common help topics:"
-                : "Zanim do nas napiszesz, sprawdź najczęstsze tematy pomocy:"}
+                : "Bekijk eerst de meest gestelde vragen voordat je ons een bericht stuurt:"}
             </p>
             <div className="space-y-2">
               {quickLinks.map(({ label, href }) => (
@@ -274,10 +249,8 @@ export default async function ContactPage({ params }) {
           </div>
         </div>
 
-        {/* Google Maps */}
         <LazyMap />
 
-        {/* FAQ */}
         {faqs.length > 0 && (
           <div className="mb-16">
             <h2 className="text-xl font-bold text-text-primary mb-8 text-center">
@@ -294,48 +267,6 @@ export default async function ContactPage({ params }) {
             </div>
           </div>
         )}
-
-        {/* Opinie */}
-        <div className="pb-16 max-sm:pb-8">
-          <h2 className="text-xl font-bold text-text-primary mb-8 text-center">
-            {isEn ? "What our customers say" : "Wat onze klanten zeggen"}
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {displayReviews.map((review, i) => {
-              const isWp = review.acf !== undefined;
-              const name = isWp ? review.acf?.author_name : review.name;
-              const text = isWp ? review.acf?.review_text : review.text;
-              const stars = isWp ? review.acf?.rating || 5 : review.stars;
-              const role = isWp ? review.acf?.author_role : null;
-
-              return (
-                <div
-                  key={review.id || i}
-                  className="bg-bg-secondary rounded-2xl p-6 border border-text-secondary/10"
-                >
-                  <div className="flex gap-1 mb-3">
-                    {Array.from({ length: Number(stars) }).map((_, j) => (
-                      <Star
-                        key={j}
-                        size={14}
-                        className="text-text-accent fill-text-accent"
-                      />
-                    ))}
-                  </div>
-                  <p className="text-sm text-text-secondary leading-relaxed mb-4">
-                    {text}
-                  </p>
-                  <p className="text-xs font-semibold text-text-primary">
-                    — {name}
-                  </p>
-                  {role && (
-                    <p className="text-xs text-text-secondary">{role}</p>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
       </Wrapper>
     </div>
   );

@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+Disallow: /api/
+Disallow: /_next/
+Disallow: /cart
+Disallow: /bedankt
+
+Sitemap: https://carpgate.com/sitemap.xml

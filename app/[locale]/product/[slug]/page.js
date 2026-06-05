@@ -1,10 +1,11 @@
-import { getProductBySlug, getProducts } from "@/lib/api";
+import { getProductBySlug, getProducts, getProductReviews } from "@/lib/api";
 import { getTranslations } from "next-intl/server";
 import { cleanDescription } from "@/lib/api";
 import { notFound } from "next/navigation";
 import AddToCartButton from "@/components/ProductElements/AddToCartButton";
 import ProductGrid from "@/components/ProductElements/ProductGrid";
 import ProductGallery from "@/components/ProductElements/ProductGallery";
+import ReviewForm from "@/components/ProductElements/ReviewForm";
 import Link from "next/link";
 export const revalidate = 3600;
 
@@ -39,6 +40,8 @@ export async function generateMetadata({ params }) {
 export default async function ProductPage({ params }) {
   const { slug, locale } = await params;
   const t = await getTranslations({ locale, namespace: "product" });
+  const tR = await getTranslations({ locale, namespace: "reviews" });
+
   const product = await getProductBySlug(slug, locale);
   if (!product) notFound();
 
@@ -48,16 +51,25 @@ export default async function ProductPage({ params }) {
   const regularPrice = parseFloat(product.regular_price || 0);
 
   const firstCategoryId = product.categories?.[0]?.id;
-  const { products: relatedRaw } = firstCategoryId
-    ? await getProducts(
-        { category: firstCategoryId, per_page: 5, exclude: product.id },
-        locale,
-      )
-    : { products: [] };
+
+  const [{ products: relatedRaw }, reviews] = await Promise.all([
+    firstCategoryId
+      ? getProducts(
+          { category: firstCategoryId, per_page: 5, exclude: product.id },
+          locale,
+        )
+      : { products: [] },
+    getProductReviews(product.id),
+  ]);
 
   const relatedProducts = relatedRaw
     .filter((rp) => rp.id !== product.id)
     .slice(0, 4);
+
+  const avgRating =
+    reviews.length > 0
+      ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+      : 0;
 
   return (
     <div className="bg-bg-primary min-h-screen">
@@ -120,6 +132,36 @@ export default async function ProductPage({ params }) {
             <h1 className="text-2xl md:text-3xl font-bold text-text-primary">
               {product.name}
             </h1>
+
+            {/* Średnia ocena */}
+            {reviews.length > 0 && (
+              <a
+                href="#reviews"
+                className="flex items-center gap-2 w-fit group"
+              >
+                <div className="flex text-sm">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <span
+                      key={star}
+                      className={
+                        star <= Math.round(avgRating)
+                          ? "text-yellow-400"
+                          : "text-text-secondary/20"
+                      }
+                    >
+                      ★
+                    </span>
+                  ))}
+                </div>
+                <span className="text-sm text-text-secondary group-hover:text-text-primary transition-colors">
+                  {avgRating.toFixed(1)} ({reviews.length}{" "}
+                  {reviews.length === 1
+                    ? tR("reviewSingle")
+                    : tR("reviewPlural")}
+                  )
+                </span>
+              </a>
+            )}
 
             {/* Cena */}
             <div className="flex items-center gap-3">
@@ -206,9 +248,9 @@ export default async function ProductPage({ params }) {
               {t("description")}
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-              {/* Panel boczny — na mobile PRZED opisem */}
+              {/* Panel boczny */}
               <div className="lg:col-span-1 lg:order-2">
-                <div className="bg-bg-secondary rounded-2xl p-6 space-y-4 ">
+                <div className="bg-bg-secondary rounded-2xl p-6 space-y-4">
                   {product.sku && (
                     <div>
                       <p className="text-xs text-text-secondary uppercase tracking-wider mb-1">
@@ -265,23 +307,23 @@ export default async function ProductPage({ params }) {
                 </div>
               </div>
 
-              {/* Opis — na mobile PO panelu */}
+              {/* Opis */}
               <div className="lg:col-span-2 lg:order-1">
                 <div className="overflow-x-auto">
                   <div
                     className="prose prose-invert max-w-none
-          [&_p]:text-text-secondary [&_p]:leading-relaxed [&_p]:mb-4
-          [&_strong]:text-text-primary [&_strong]:font-semibold
-          [&_ul]:text-text-secondary [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1 [&_ul]:mb-4
-          [&_li]:text-text-secondary
-          [&_h2]:text-text-primary [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:mt-6 [&_h2]:mb-3
-          [&_h3]:text-text-primary [&_h3]:font-semibold [&_h3]:mt-4 [&_h3]:mb-2
-          [&_table]:w-full [&_table]:border-collapse [&_table]:mt-6 [&_table]:min-w-[500px]
-          [&_tr]:border-b [&_tr]:border-text-secondary/10
-          [&_tr:last-child]:border-0
-          [&_td]:py-3 [&_td]:px-4 [&_td]:text-text-secondary [&_td]:text-sm
-          [&_th]:py-3 [&_th]:px-4 [&_th]:text-text-primary [&_th]:text-sm [&_th]:font-semibold [&_th]:text-left
-          [&_tbody_tr:nth-child(even)]:bg-bg-secondary/50"
+                      [&_p]:text-text-secondary [&_p]:leading-relaxed [&_p]:mb-4
+                      [&_strong]:text-text-primary [&_strong]:font-semibold
+                      [&_ul]:text-text-secondary [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1 [&_ul]:mb-4
+                      [&_li]:text-text-secondary
+                      [&_h2]:text-text-primary [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:mt-6 [&_h2]:mb-3
+                      [&_h3]:text-text-primary [&_h3]:font-semibold [&_h3]:mt-4 [&_h3]:mb-2
+                      [&_table]:w-full [&_table]:border-collapse [&_table]:mt-6 [&_table]:min-w-[500px]
+                      [&_tr]:border-b [&_tr]:border-text-secondary/10
+                      [&_tr:last-child]:border-0
+                      [&_td]:py-3 [&_td]:px-4 [&_td]:text-text-secondary [&_td]:text-sm
+                      [&_th]:py-3 [&_th]:px-4 [&_th]:text-text-primary [&_th]:text-sm [&_th]:font-semibold [&_th]:text-left
+                      [&_tbody_tr:nth-child(even)]:bg-bg-secondary/50"
                     dangerouslySetInnerHTML={{
                       __html: cleanDescription(product.description),
                     }}
@@ -291,6 +333,92 @@ export default async function ProductPage({ params }) {
             </div>
           </section>
         )}
+
+        {/* Recenzje */}
+        <section
+          id="reviews"
+          className="mt-10 pt-10 border-t border-text-secondary/10"
+        >
+          <h2 className="text-xl font-semibold mb-8 text-text-primary">
+            {tR("title")}
+            {reviews.length > 0 && (
+              <span className="ml-3 text-sm font-normal text-text-secondary">
+                ({reviews.length})
+              </span>
+            )}
+          </h2>
+
+          {reviews.length > 0 ? (
+            <div className="space-y-4 mb-10">
+              {reviews.map((review) => (
+                <div
+                  key={review.id}
+                  className="bg-bg-secondary rounded-2xl p-5 flex flex-col gap-2"
+                >
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <div className="flex items-center gap-3">
+                      <span className="font-medium text-text-primary text-sm">
+                        {review.reviewer}
+                      </span>
+                      {review.verified && (
+                        <span className="text-xs text-green-400 bg-green-400/10 px-2 py-0.5 rounded-full">
+                          {tR("verified")}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex text-sm">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <span
+                          key={star}
+                          className={
+                            star <= review.rating
+                              ? "text-yellow-400"
+                              : "text-text-secondary/20"
+                          }
+                        >
+                          ★
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div
+                    className="text-text-secondary text-sm leading-relaxed"
+                    dangerouslySetInnerHTML={{ __html: review.review }}
+                  />
+                  <p className="text-xs text-text-secondary/40">
+                    {new Date(review.date_created).toLocaleDateString(
+                      locale === "en" ? "en-GB" : "nl-NL",
+                      { year: "numeric", month: "long", day: "numeric" },
+                    )}
+                  </p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-text-secondary/50 text-sm mb-10">
+              {tR("noReviews")}
+            </p>
+          )}
+
+          <div className="bg-bg-secondary rounded-2xl p-6">
+            <h3 className="text-base font-semibold text-text-primary mb-5">
+              {tR("writeReview")}
+            </h3>
+            <ReviewForm
+              productId={product.id}
+              translations={{
+                ratingLabel: tR("ratingLabel"),
+                namePlaceholder: tR("namePlaceholder"),
+                emailPlaceholder: tR("emailPlaceholder"),
+                reviewPlaceholder: tR("reviewPlaceholder"),
+                submit: tR("submit"),
+                sending: tR("sending"),
+                success: tR("success"),
+                error: tR("error"),
+              }}
+            />
+          </div>
+        </section>
 
         {/* Powiązane produkty */}
         {relatedProducts.length > 0 && (

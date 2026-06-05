@@ -7,7 +7,7 @@ export default function AboutHero({ title, subtitle }) {
       <motion.h1
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        transition={{ duration: 0.6, delay: 0.6, ease: "easeOut" }}
         className="text-7xl font-bold uppercase text-text-primary max-sm:text-5xl mb-6"
       >
         {title}
@@ -16,7 +16,7 @@ export default function AboutHero({ title, subtitle }) {
         <motion.p
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
+          transition={{ duration: 0.6, delay: 0.7, ease: "easeOut" }}
           className="text-xl font-medium text-text-secondary"
         >
           {subtitle}

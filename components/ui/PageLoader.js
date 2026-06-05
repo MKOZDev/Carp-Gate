@@ -4,17 +4,24 @@ import { useState, useEffect } from "react";
 
 export default function PageLoader() {
   const [visible, setVisible] = useState(true);
+  const [fading, setFading] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setVisible(false), 1000);
-    return () => clearTimeout(timer);
+    const fadeTimer = setTimeout(() => setFading(true), 800);
+    const hideTimer = setTimeout(() => setVisible(false), 1300);
+    return () => {
+      clearTimeout(fadeTimer);
+      clearTimeout(hideTimer);
+    };
   }, []);
 
   if (!visible) return null;
 
   return (
     <div
-      className={`fixed inset-0 z-[9999] bg-bg-primary flex items-center justify-center transition-opacity duration-500 ${visible ? "opacity-100" : "opacity-0"}`}
+      className={`fixed inset-0 z-[9999] bg-bg-primary flex items-center justify-center transition-opacity duration-500 ${
+        fading ? "opacity-0" : "opacity-100"
+      }`}
     >
       <div className="flex flex-col items-center gap-6">
         <Image
@@ -24,8 +31,6 @@ export default function PageLoader() {
           height={100}
           className="object-contain"
         />
-
-        {/* Loader */}
         <div className="flex gap-2">
           {[0, 1, 2].map((i) => (
             <div
@@ -38,7 +43,6 @@ export default function PageLoader() {
           ))}
         </div>
       </div>
-
       <style>{`
         @keyframes bounce {
           from { transform: translateY(0); opacity: 0.4; }

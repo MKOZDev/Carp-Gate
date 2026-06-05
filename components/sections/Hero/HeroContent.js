@@ -8,7 +8,7 @@ export default function HeroContent({ title, subtitle, cta, href }) {
       <motion.h1
         initial={{ opacity: 0, x: -40 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        transition={{ duration: 0.6, delay: 0.6, ease: "easeOut" }}
         className="text-7xl font-bold uppercase text-text-primary max-sm:text-5xl"
       >
         {title}
@@ -17,7 +17,7 @@ export default function HeroContent({ title, subtitle, cta, href }) {
       <motion.p
         initial={{ opacity: 0, x: -30 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
+        transition={{ duration: 0.6, delay: 0.7, ease: "easeOut" }}
         className="text-xl font-medium text-text-secondary"
       >
         {subtitle}
@@ -26,7 +26,7 @@ export default function HeroContent({ title, subtitle, cta, href }) {
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
+        transition={{ duration: 0.6, delay: 0.8, ease: "easeOut" }}
       >
         <PrimaryBtn href={href}>
           {cta}
