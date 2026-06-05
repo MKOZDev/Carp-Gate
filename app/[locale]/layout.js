@@ -115,6 +115,10 @@ export async function generateMetadata({ params }) {
     verification: {
       google: "",
     },
+    icons: {
+      icon: "/logo.png",
+      apple: "/logo.png",
+    },
   };
 }
 
