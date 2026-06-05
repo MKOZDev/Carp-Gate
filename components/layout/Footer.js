@@ -81,29 +81,6 @@ function MastercardIcon() {
   );
 }
 
-function IDealIcon() {
-  return (
-    <PaymentBadge>
-      <svg
-        viewBox="0 0 40 24"
-        className="h-4 w-auto"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <text
-          x="2"
-          y="17"
-          fontSize="13"
-          fontWeight="800"
-          fontFamily="Arial, sans-serif"
-          fill="#CC0066"
-        >
-          iDEAL
-        </text>
-      </svg>
-    </PaymentBadge>
-  );
-}
-
 export default async function Footer({ locale = "nl" }) {
   const p = locale === "en" ? "/en" : "";
 
@@ -231,7 +208,6 @@ export default async function Footer({ locale = "nl" }) {
               <MollieIcon />
               <VisaIcon />
               <MastercardIcon />
-              <IDealIcon />
             </div>
           </div>
 
