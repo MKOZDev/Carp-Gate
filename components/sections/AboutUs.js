@@ -19,7 +19,12 @@ export default async function AboutUs({ locale }) {
           </div>
           <div>
             <HeadingBox title={t("subtitle")} accent={t("title")} />
-            <p className="text-md text-text-secondary mb-6">{t("text")}</p>
+            <p className="text-md text-text-secondary mb-6">
+              {t("text")}
+              <br />
+              <br />
+              <strong>{t("tagline")}</strong>
+            </p>
             <PrimaryBtn href={`${p}/${slug}`}>{t("cta")}</PrimaryBtn>
           </div>
         </div>

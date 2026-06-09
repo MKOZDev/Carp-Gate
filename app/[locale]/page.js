@@ -14,6 +14,7 @@ import Wrapper from "@/components/layout/Wrapper";
 import ProductGrid from "@/components/ProductElements/ProductGrid";
 import ReviewsSection from "@/components/sections/ReviewsSection";
 import Newsletter from "@/components/sections/Newsletter";
+import BestsellerCard from "@/components/ProductElements/BestsellerCard";
 
 export async function generateMetadata({ params }) {
   const { locale } = await params;
@@ -39,9 +40,25 @@ export default async function HomePage({ params }) {
       <Hero locale={locale} />
 
       <AboutUs locale={locale} />
+      {featured.length > 0 && (
+        <section className="bg-bg-secondary py-24 max-sm:py-8">
+          <Wrapper>
+            <HeadingBox accent={t("featuredAccent")} title={t("featured")} />
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 lg:gap-6">
+              {featured.map((product) => (
+                <BestsellerCard
+                  key={product.id}
+                  product={product}
+                  locale={locale}
+                />
+              ))}
+            </div>
+          </Wrapper>
+        </section>
+      )}
 
       {categories.length > 0 && (
-        <section className="bg-bg-secondary py-24 max-sm:py-8">
+        <section className=" bg-bg-primary py-24 max-sm:py-8">
           <Wrapper>
             <HeadingBox
               accent={t("categoriesAccent")}
@@ -86,15 +103,6 @@ export default async function HomePage({ params }) {
                 </Link>
               ))}
             </div>
-          </Wrapper>
-        </section>
-      )}
-
-      {featured.length > 0 && (
-        <section className="bg-bg-primary py-24 max-sm:py-8">
-          <Wrapper>
-            <HeadingBox accent={t("featuredAccent")} title={t("featured")} />
-            <ProductGrid products={featured} locale={locale} />
           </Wrapper>
         </section>
       )}
