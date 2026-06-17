@@ -40,6 +40,17 @@ export default function BestsellerSlider({ products, locale }) {
     setIndex(clamp(i));
   }
 
+  // Autoplay — co 2s, zapętlony, pauzuje na hover/drag
+  const [isHovering, setIsHovering] = useState(false);
+
+  useEffect(() => {
+    if (isHovering || isPointerDown) return;
+    const timer = setInterval(() => {
+      setIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
+    }, 3000);
+    return () => clearInterval(timer);
+  }, [isHovering, isPointerDown, maxIndex]);
+
   // Drag handlers (mysz + touch)
   function onDown(clientX) {
     isDragging.current = false;
@@ -104,10 +115,14 @@ export default function BestsellerSlider({ products, locale }) {
       <div
         ref={containerRef}
         className="overflow-hidden select-none cursor-grab active:cursor-grabbing"
+        onMouseEnter={() => setIsHovering(true)}
+        onMouseLeave={() => {
+          setIsHovering(false);
+          onUp();
+        }}
         onMouseDown={(e) => onDown(e.clientX)}
         onMouseMove={(e) => onMove(e.clientX)}
         onMouseUp={onUp}
-        onMouseLeave={onUp}
         onTouchStart={(e) => onDown(e.touches[0].clientX)}
         onTouchMove={(e) => onMove(e.touches[0].clientX)}
         onTouchEnd={onUp}
