@@ -15,6 +15,7 @@ import ProductGrid from "@/components/ProductElements/ProductGrid";
 import ReviewsSection from "@/components/sections/ReviewsSection";
 import Newsletter from "@/components/sections/Newsletter";
 import BestsellerCard from "@/components/ProductElements/BestsellerCard";
+import BestsellerSlider from "@/components/ProductElements/Bestsellerslider";
 
 export async function generateMetadata({ params }) {
   const { locale } = await params;
@@ -31,7 +32,7 @@ export default async function HomePage({ params }) {
   const [{ products }, { products: featured }, categories, reviews] =
     await Promise.all([
       getProducts({ per_page: 8 }, locale),
-      getProducts({ featured: true, per_page: 4 }, locale),
+      getProducts({ featured: true, per_page: 100 }, locale),
       getCategories(locale),
       getLatestReviews(12),
     ]);
@@ -44,15 +45,7 @@ export default async function HomePage({ params }) {
         <section className="bg-bg-secondary py-24 max-sm:py-8">
           <Wrapper>
             <HeadingBox accent={t("featuredAccent")} title={t("featured")} />
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 lg:gap-6">
-              {featured.map((product) => (
-                <BestsellerCard
-                  key={product.id}
-                  product={product}
-                  locale={locale}
-                />
-              ))}
-            </div>
+            <BestsellerSlider products={featured} locale={locale} />
           </Wrapper>
         </section>
       )}

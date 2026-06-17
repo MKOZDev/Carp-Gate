@@ -81,6 +81,91 @@ function MastercardIcon() {
   );
 }
 
+function ApplePayIcon() {
+  return (
+    <PaymentBadge>
+      <svg
+        viewBox="0 0 45 22"
+        className="h-4 w-auto"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M9.5 3.6c-.55.66-1.43 1.18-2.3 1.1-.11-.88.32-1.8.83-2.38C8.58 1.6 9.5 1.1 10.25 1.07c.1.91-.26 1.8-.75 2.53zm.73 1.16c-1.27-.08-2.35.72-2.96.72-.62 0-1.55-.68-2.55-.66-1.31.02-2.53.76-3.19 1.94-1.37 2.37-.35 5.97.97 7.93.65.96 1.42 2.02 2.43 1.98.96-.04 1.34-.62 2.51-.62 1.18 0 1.51.62 2.55.6 1.04-.02 1.7-.97 2.34-1.93.74-1.1 1.04-2.16 1.06-2.23-.02-.02-2.04-.79-2.06-3.13-.02-1.96 1.6-2.9 1.67-2.95-.91-1.34-2.33-1.49-2.77-1.65z"
+          fill="#000"
+        />
+        <text
+          x="17"
+          y="16"
+          fontSize="12"
+          fontWeight="600"
+          fontFamily="-apple-system, Arial, sans-serif"
+          fill="#000"
+        >
+          Pay
+        </text>
+      </svg>
+    </PaymentBadge>
+  );
+}
+
+function PayPalIcon() {
+  return (
+    <PaymentBadge>
+      <svg
+        viewBox="0 0 50 20"
+        className="h-4 w-auto"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <text
+          x="0"
+          y="15"
+          fontSize="14"
+          fontWeight="800"
+          fontFamily="Arial, sans-serif"
+          fill="#003087"
+          fontStyle="italic"
+        >
+          Pay
+        </text>
+        <text
+          x="22"
+          y="15"
+          fontSize="14"
+          fontWeight="800"
+          fontFamily="Arial, sans-serif"
+          fill="#009cde"
+          fontStyle="italic"
+        >
+          Pal
+        </text>
+      </svg>
+    </PaymentBadge>
+  );
+}
+
+function KlarnaIcon() {
+  return (
+    <PaymentBadge bg="#FFB3C7">
+      <svg
+        viewBox="0 0 55 18"
+        className="h-4 w-auto"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <text
+          x="0"
+          y="14"
+          fontSize="13"
+          fontWeight="800"
+          fontFamily="Arial, sans-serif"
+          fill="#000"
+        >
+          Klarna.
+        </text>
+      </svg>
+    </PaymentBadge>
+  );
+}
+
 export default async function Footer({ locale = "nl" }) {
   const p = locale === "en" ? "/en" : "";
 
@@ -107,11 +192,6 @@ export default async function Footer({ locale = "nl" }) {
                 CARP GATE
               </span>
             </Link>
-            {/* <p className="text-text-secondary text-xs leading-relaxed mb-4">
-              {locale === "en"
-                ? "Field-tested carp materials. Europe-wide shipping from Utrecht."
-                : "In het veld geteste karpermaterialen. Europa-breed verzonden vanuit Utrecht."}
-            </p> */}
             <p className="text-text-secondary text-xs font-bold leading-relaxed mb-2">
               {locale === "en"
                 ? "Order carp fishing gear online"
@@ -119,8 +199,8 @@ export default async function Footer({ locale = "nl" }) {
             </p>
             <p className="text-text-secondary text-xs leading-relaxed">
               {locale === "en"
-                ? "There are many different types of carp fishing gear that you can order online from carGate. We’ve organized our online store as efficiently as possible so you can always find the right gear quickly and easily. We also offer competitive shipping rates. This means you can have packages of hooks and other tackle delivered via PostNL. Larger items are shipped via DPD. We have a wide range of carp fishing gear, from hooks, boilies, and rig rings to tents, boats, and power banks. If you can think of anything related to carp fishing, chances are you’ll find it in our selection."
-                : "Er zijn heel veel soorten karperspullen die je online kunt bestellen bij carGate. We hebben onze webshop zo efficiënt mogelijk ingedeeld zodat jij altijd de juiste spullen goed en snel kunt vinden. Ook bieden we scherpe tarieven voor verzending. Zo kun je pakjes haken en overige tackle ook gewoon laten bezorgen met PostNL. Grotere items gaan met DPD  mee. We hebben een groot assortiment karperspullen van haken, boilies, rig rings tot tenten, boten en powerbanks. Als je kan bedenken dat het met karpervissen te maken heeft, is de kans groot dat je het in ons assortiment terug vind."}
+                ? "There are many different types of carp fishing gear that you can order online from CarpGate. We’ve organized our online store as efficiently as possible so you can always find the right gear quickly and easily. We also offer competitive shipping rates. This means you can have packages of hooks and other tackle delivered via PostNL. Larger items are shipped via DPD. We have a wide range of carp fishing gear, from hooks, boilies, and rig rings to tents, boats, and power banks. If you can think of anything related to carp fishing, chances are you’ll find it in our selection."
+                : "Er zijn heel veel soorten karperspullen die je online kunt bestellen bij CarpGate. We hebben onze webshop zo efficiënt mogelijk ingedeeld zodat jij altijd de juiste spullen goed en snel kunt vinden. Ook bieden we scherpe tarieven voor verzending. Zo kun je pakjes haken en overige tackle ook gewoon laten bezorgen met PostNL. Grotere items gaan met DPD  mee. We hebben een groot assortiment karperspullen van haken, boilies, rig rings tot tenten, boten en powerbanks. Als je kan bedenken dat het met karpervissen te maken heeft, is de kans groot dat je het in ons assortiment terug vind."}
             </p>
           </div>
 
@@ -208,6 +288,9 @@ export default async function Footer({ locale = "nl" }) {
               <MollieIcon />
               <VisaIcon />
               <MastercardIcon />
+              <ApplePayIcon />
+              <PayPalIcon />
+              <KlarnaIcon />
             </div>
           </div>
 

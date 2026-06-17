@@ -53,7 +53,7 @@ export default function BestsellerCard({ product, locale }) {
   }
 
   return (
-    <div className="group flex flex-col bg-bg-primary rounded border border-transparent hover:border-text-accent duration-150 hover:-translate-y-0.5">
+    <div className="group flex flex-col bg-bg-primary rounded border border-transparent h-full hover:border-text-accent duration-150 hover:-translate-y-0.5">
       <div
         className="relative aspect-square overflow-hidden rounded select-none"
         onTouchStart={onTouchStart}
