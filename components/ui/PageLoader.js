@@ -1,14 +1,118 @@
 "use client";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 
-export default function PageLoader() {
+function NavigationBar() {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [progress, setProgress] = useState(0);
+  const [visible, setVisible] = useState(false);
+  const intervalRef = useRef(null);
+  const hideTimerRef = useRef(null);
+  const isNavigating = useRef(false);
+
+  const startProgress = useCallback(() => {
+    if (isNavigating.current) return;
+    isNavigating.current = true;
+    clearInterval(intervalRef.current);
+    clearTimeout(hideTimerRef.current);
+    setProgress(0);
+    setVisible(true);
+    let current = 0;
+    intervalRef.current = setInterval(() => {
+      current += Math.random() * 12 + 3;
+      if (current >= 85) {
+        current = 85;
+        clearInterval(intervalRef.current);
+      }
+      setProgress(current);
+    }, 120);
+  }, []);
+
+  const finishProgress = useCallback(() => {
+    clearInterval(intervalRef.current);
+    setProgress(100);
+    hideTimerRef.current = setTimeout(() => {
+      setVisible(false);
+      setProgress(0);
+      isNavigating.current = false;
+    }, 400);
+  }, []);
+
+  // Kliknięcie w link — start natychmiast
+  useEffect(() => {
+    function handleClick(e) {
+      const anchor = e.target.closest("a");
+      if (!anchor) return;
+      const href = anchor.getAttribute("href");
+      if (!href) return;
+      if (
+        href.startsWith("http") ||
+        href.startsWith("#") ||
+        href.startsWith("mailto") ||
+        href.startsWith("tel")
+      )
+        return;
+      const currentPath = window.location.pathname + window.location.search;
+      if (currentPath === href) return;
+      startProgress();
+    }
+    document.addEventListener("click", handleClick);
+    return () => document.removeEventListener("click", handleClick);
+  }, [startProgress]);
+
+  // Zakończ gdy URL się zmieni
+  const prevUrl = useRef(null);
+  useEffect(() => {
+    const currentUrl = pathname + searchParams.toString();
+    if (prevUrl.current === null) {
+      prevUrl.current = currentUrl;
+      return;
+    }
+    if (prevUrl.current !== currentUrl) {
+      prevUrl.current = currentUrl;
+      finishProgress();
+    }
+  }, [pathname, searchParams, finishProgress]);
+
+  useEffect(() => {
+    return () => {
+      clearInterval(intervalRef.current);
+      clearTimeout(hideTimerRef.current);
+    };
+  }, []);
+
+  if (!visible) return null;
+
+  return (
+    <div className="fixed top-0 left-0 right-0 z-[9998] h-0.5 pointer-events-none">
+      <div
+        className="h-full bg-text-accent transition-all duration-200 ease-out"
+        style={{ width: `${progress}%` }}
+      />
+      <div
+        className="absolute top-0 h-full w-16 bg-text-accent/50 blur-sm transition-all duration-200"
+        style={{ left: `calc(${progress}% - 64px)` }}
+      />
+    </div>
+  );
+}
+
+function SplashScreen() {
   const [visible, setVisible] = useState(true);
   const [fading, setFading] = useState(false);
 
   useEffect(() => {
+    if (sessionStorage.getItem("loaderDone")) {
+      setVisible(false);
+      return;
+    }
     const fadeTimer = setTimeout(() => setFading(true), 800);
-    const hideTimer = setTimeout(() => setVisible(false), 1300);
+    const hideTimer = setTimeout(() => {
+      setVisible(false);
+      sessionStorage.setItem("loaderDone", "1");
+    }, 1300);
     return () => {
       clearTimeout(fadeTimer);
       clearTimeout(hideTimer);
@@ -50,5 +154,14 @@ export default function PageLoader() {
         }
       `}</style>
     </div>
+  );
+}
+
+export default function PageLoader() {
+  return (
+    <>
+      <SplashScreen />
+      <NavigationBar />
+    </>
   );
 }

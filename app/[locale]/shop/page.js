@@ -34,7 +34,7 @@ export default async function ShopPage({ params, searchParams }) {
   const [{ products, totalPages }, categories] = await Promise.all([
     getProducts(
       {
-        per_page: 10,
+        per_page: 12,
         page: currentPage,
         ...getSortParams(sort_by),
         min_price: min_price || undefined,

@@ -126,14 +126,14 @@ export default async function LocaleLayout({ children, params }) {
   const { locale } = await params;
   if (!locales.includes(locale)) notFound();
 
-  const [messages, categories, menuNl, menuEn] = await Promise.all([
+  const menuName = locale === "en" ? "main-menu-en" : "menu-main-nl";
+
+  // 3 fetche zamiast 4 — menu tylko dla aktualnego locale
+  const [messages, categories, menuItems] = await Promise.all([
     getMessages({ locale }),
     getCategories(locale),
-    getMenu("nl", "menu-main-nl"),
-    getMenu("en", "main-menu-en"),
+    getMenu(locale, menuName),
   ]);
-
-  const menuItems = locale === "en" ? menuEn : menuNl;
 
   return (
     <html lang={locale} className={`${inter.variable} ${manrope.variable}`}>

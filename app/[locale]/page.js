@@ -11,10 +11,8 @@ import Image from "next/image";
 import AboutUs from "@/components/sections/AboutUs";
 import HeadingBox from "@/components/ui/HeadingBox";
 import Wrapper from "@/components/layout/Wrapper";
-import ProductGrid from "@/components/ProductElements/ProductGrid";
 import ReviewsSection from "@/components/sections/ReviewsSection";
 import Newsletter from "@/components/sections/Newsletter";
-import BestsellerCard from "@/components/ProductElements/BestsellerCard";
 import BestsellerSlider from "@/components/ProductElements/Bestsellerslider";
 
 export async function generateMetadata({ params }) {
@@ -29,18 +27,20 @@ export default async function HomePage({ params }) {
   const tR = await getTranslations({ locale, namespace: "reviews" });
   const p = locale === "en" ? "/en" : "";
 
-  const [{ products }, { products: featured }, categories, reviews] =
-    await Promise.all([
-      getProducts({ per_page: 8 }, locale),
-      getProducts({ featured: true, per_page: 100 }, locale),
-      getCategories(locale),
-      getLatestReviews(12),
-    ]);
+  // Równolegle — wszystkie fetche jednocześnie
+  // featured: max 12 zamiast 100 — slider i tak nie pokazuje więcej
+  const [{ products: featured }, categories, reviews] = await Promise.all([
+    getProducts({ featured: true, per_page: 12 }, locale),
+    getCategories(locale),
+    getLatestReviews(12),
+  ]);
+
   return (
     <>
       <Hero locale={locale} />
 
       <AboutUs locale={locale} />
+
       {featured.length > 0 && (
         <section className="bg-bg-secondary py-24 max-sm:py-8">
           <Wrapper>
@@ -51,7 +51,7 @@ export default async function HomePage({ params }) {
       )}
 
       {categories.length > 0 && (
-        <section className=" bg-bg-primary py-24 max-sm:py-8">
+        <section className="bg-bg-primary py-24 max-sm:py-8">
           <Wrapper>
             <HeadingBox
               accent={t("categoriesAccent")}

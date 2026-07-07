@@ -7,24 +7,19 @@ import ProductGrid from "@/components/ProductElements/ProductGrid";
 import ProductGallery from "@/components/ProductElements/ProductGallery";
 import ReviewForm from "@/components/ProductElements/ReviewForm";
 import Link from "next/link";
+
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  const [nlProducts, enProducts] = await Promise.all([
-    getProducts({ per_page: 100 }, "nl"),
-    getProducts({ per_page: 100 }, "en"),
-  ]);
-
-  return [
-    ...nlProducts.products.map((p) => ({ locale: "nl", slug: p.slug })),
-    ...enProducts.products.map((p) => ({ locale: "en", slug: p.slug })),
-  ];
+  // Tylko NL — EN slugi są takie same lub WPML je mapuje
+  // per_page: 50 zamiast 100 dla szybszego buildu
+  const { products } = await getProducts({ per_page: 50 }, "nl");
+  return products.map((p) => ({ locale: "nl", slug: p.slug }));
 }
 
 export async function generateMetadata({ params }) {
   const { slug, locale } = await params;
   const product = await getProductBySlug(slug, locale);
-
   if (!product) return { title: "Niet gevonden" };
   return {
     title: product.name,
@@ -39,26 +34,30 @@ export async function generateMetadata({ params }) {
 
 export default async function ProductPage({ params }) {
   const { slug, locale } = await params;
-  const t = await getTranslations({ locale, namespace: "product" });
-  const tR = await getTranslations({ locale, namespace: "reviews" });
 
-  const product = await getProductBySlug(slug, locale);
+  // Wszystko równolegle — tłumaczenia nie wymagają fetch do WP
+  const [t, tR, product] = await Promise.all([
+    getTranslations({ locale, namespace: "product" }),
+    getTranslations({ locale, namespace: "reviews" }),
+    getProductBySlug(slug, locale),
+  ]);
+
   if (!product) notFound();
 
   const p = locale === "en" ? "/en" : "";
   const isOnSale = product.on_sale;
   const price = parseFloat(product.price || 0);
   const regularPrice = parseFloat(product.regular_price || 0);
-
   const firstCategoryId = product.categories?.[0]?.id;
 
+  // Related i reviews równolegle — nie czekamy sekwencyjnie
   const [{ products: relatedRaw }, reviews] = await Promise.all([
     firstCategoryId
       ? getProducts(
           { category: firstCategoryId, per_page: 5, exclude: product.id },
           locale,
         )
-      : { products: [] },
+      : Promise.resolve({ products: [] }),
     getProductReviews(product.id),
   ]);
 
@@ -113,7 +112,6 @@ export default async function ProductPage({ params }) {
           />
 
           <div className="flex flex-col gap-5">
-            {/* Kategorie */}
             {product.categories?.length > 0 && (
               <div className="flex gap-2 flex-wrap">
                 {product.categories.map((cat) => (
@@ -128,12 +126,10 @@ export default async function ProductPage({ params }) {
               </div>
             )}
 
-            {/* Nazwa */}
             <h1 className="text-2xl md:text-3xl font-bold text-text-primary">
               {product.name}
             </h1>
 
-            {/* Średnia ocena */}
             {reviews.length > 0 && (
               <a
                 href="#reviews"
@@ -163,7 +159,6 @@ export default async function ProductPage({ params }) {
               </a>
             )}
 
-            {/* Cena */}
             <div className="flex items-center gap-3">
               {product.type !== "variable" && (
                 <>
@@ -196,7 +191,6 @@ export default async function ProductPage({ params }) {
               )}
             </div>
 
-            {/* Krótki opis */}
             {product.short_description && (
               <div
                 className="text-text-secondary text-sm leading-relaxed prose prose-sm max-w-none prose-invert"
@@ -206,14 +200,9 @@ export default async function ProductPage({ params }) {
 
             <AddToCartButton product={product} />
 
-            {/* Stan magazynowy */}
             <div className="flex items-center gap-2 text-sm">
               <div
-                className={`w-2 h-2 rounded-full ${
-                  product.stock_status === "instock"
-                    ? "bg-green-500"
-                    : "bg-red-400"
-                }`}
+                className={`w-2 h-2 rounded-full ${product.stock_status === "instock" ? "bg-green-500" : "bg-red-400"}`}
               />
               <span
                 className={
@@ -241,14 +230,12 @@ export default async function ProductPage({ params }) {
           </div>
         </div>
 
-        {/* Opis */}
         {product.description && (
           <section className="mt-10 pt-10 border-t border-text-secondary/10">
             <h2 className="text-xl font-semibold mb-8 text-text-primary">
               {t("description")}
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-              {/* Panel boczny */}
               <div className="lg:col-span-1 lg:order-2">
                 <div className="bg-bg-secondary rounded-2xl p-6 space-y-4">
                   {product.sku && (
@@ -285,18 +272,10 @@ export default async function ProductPage({ params }) {
                     </p>
                     <div className="flex items-center gap-2">
                       <div
-                        className={`w-2 h-2 rounded-full ${
-                          product.stock_status === "instock"
-                            ? "bg-green-500"
-                            : "bg-red-400"
-                        }`}
+                        className={`w-2 h-2 rounded-full ${product.stock_status === "instock" ? "bg-green-500" : "bg-red-400"}`}
                       />
                       <span
-                        className={`text-sm ${
-                          product.stock_status === "instock"
-                            ? "text-green-400"
-                            : "text-red-400"
-                        }`}
+                        className={`text-sm ${product.stock_status === "instock" ? "text-green-400" : "text-red-400"}`}
                       >
                         {product.stock_status === "instock"
                           ? t("inStock")
@@ -306,24 +285,22 @@ export default async function ProductPage({ params }) {
                   </div>
                 </div>
               </div>
-
-              {/* Opis */}
               <div className="lg:col-span-2 lg:order-1">
                 <div className="overflow-x-auto">
                   <div
                     className="prose prose-invert max-w-none
-                      [&_p]:text-text-secondary [&_p]:leading-relaxed [&_p]:mb-4
-                      [&_strong]:text-text-primary [&_strong]:font-semibold
-                      [&_ul]:text-text-secondary [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1 [&_ul]:mb-4
-                      [&_li]:text-text-secondary
-                      [&_h2]:text-text-primary [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:mt-6 [&_h2]:mb-3
-                      [&_h3]:text-text-primary [&_h3]:font-semibold [&_h3]:mt-4 [&_h3]:mb-2
-                      [&_table]:w-full [&_table]:border-collapse [&_table]:mt-6 [&_table]:min-w-[500px]
-                      [&_tr]:border-b [&_tr]:border-text-secondary/10
-                      [&_tr:last-child]:border-0
-                      [&_td]:py-3 [&_td]:px-4 [&_td]:text-text-secondary [&_td]:text-sm
-                      [&_th]:py-3 [&_th]:px-4 [&_th]:text-text-primary [&_th]:text-sm [&_th]:font-semibold [&_th]:text-left
-                      [&_tbody_tr:nth-child(even)]:bg-bg-secondary/50"
+                    [&_p]:text-text-secondary [&_p]:leading-relaxed [&_p]:mb-4
+                    [&_strong]:text-text-primary [&_strong]:font-semibold
+                    [&_ul]:text-text-secondary [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1 [&_ul]:mb-4
+                    [&_li]:text-text-secondary
+                    [&_h2]:text-text-primary [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:mt-6 [&_h2]:mb-3
+                    [&_h3]:text-text-primary [&_h3]:font-semibold [&_h3]:mt-4 [&_h3]:mb-2
+                    [&_table]:w-full [&_table]:border-collapse [&_table]:mt-6 [&_table]:min-w-[500px]
+                    [&_tr]:border-b [&_tr]:border-text-secondary/10
+                    [&_tr:last-child]:border-0
+                    [&_td]:py-3 [&_td]:px-4 [&_td]:text-text-secondary [&_td]:text-sm
+                    [&_th]:py-3 [&_th]:px-4 [&_th]:text-text-primary [&_th]:text-sm [&_th]:font-semibold [&_th]:text-left
+                    [&_tbody_tr:nth-child(even)]:bg-bg-secondary/50"
                     dangerouslySetInnerHTML={{
                       __html: cleanDescription(product.description),
                     }}
@@ -334,7 +311,6 @@ export default async function ProductPage({ params }) {
           </section>
         )}
 
-        {/* Recenzje */}
         <section
           id="reviews"
           className="mt-10 pt-10 border-t border-text-secondary/10"
@@ -420,7 +396,6 @@ export default async function ProductPage({ params }) {
           </div>
         </section>
 
-        {/* Powiązane produkty */}
         {relatedProducts.length > 0 && (
           <section className="mt-10 pt-10 border-t border-text-secondary/10">
             <h2 className="text-xl font-semibold mb-8 text-text-primary">
