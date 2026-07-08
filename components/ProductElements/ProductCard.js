@@ -157,13 +157,13 @@ export default function ProductCard({ product, locale }) {
         <button
           onClick={handleQuickAdd}
           className={`inline-flex items-center justify-center gap-2 h-[40px] text-sm cursor-pointer px-4 rounded border transition-all duration-150
-            ${
-              added
-                ? "border-green-500 text-green-400 bg-green-500/10"
-                : outOfStock
-                  ? "border-text-secondary/20 text-text-secondary/40 cursor-not-allowed"
-                  : "border-text-accent/40 text-text-accent hover:bg-text-accent hover:text-bg-primary"
-            }`}
+    ${
+      added
+        ? "border-green-500 text-green-400 bg-green-500/10"
+        : outOfStock
+          ? "border-text-secondary/20 text-text-secondary/40 cursor-not-allowed"
+          : "border-text-accent/40 text-text-accent hover:bg-text-accent hover:text-bg-primary"
+    }`}
         >
           {added ? (
             <>
@@ -180,10 +180,10 @@ export default function ProductCard({ product, locale }) {
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              {t("added")}
+              <span className="max-xl:hidden">{t("added")}</span>
             </>
           ) : outOfStock ? (
-            t("outOfStock")
+            <span className="max-xl:hidden">{t("outOfStock")}</span>
           ) : isVariable ? (
             <>
               <svg
@@ -199,7 +199,7 @@ export default function ProductCard({ product, locale }) {
                   d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
                 />
               </svg>
-              {t("selectAll")}
+              <span className="max-xl:hidden">{t("selectAll")}</span>
             </>
           ) : (
             <>
@@ -216,7 +216,7 @@ export default function ProductCard({ product, locale }) {
                   d="M12 4.5v15m7.5-7.5h-15"
                 />
               </svg>
-              {t("addToCart")}
+              <span className="max-xl:hidden">{t("addToCart")}</span>
             </>
           )}
         </button>
