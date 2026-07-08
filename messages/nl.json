@@ -26,9 +26,9 @@
     "viewAll": "Alles bekijken"
   },
   "product": {
-    "viewProduct": "Bekijk product",
+    "viewProduct": "Bekijk",
     "addToCart": "In winkelwagen",
-    "added": "✓ Toegevoegd",
+    "added": "Toegevoegd",
     "sale": "Aanbieding",
     "inStock": "✓ Op voorraad",
     "outOfStock": "✗ Niet beschikbaar",

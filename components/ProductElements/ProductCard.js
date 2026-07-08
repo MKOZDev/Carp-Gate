@@ -5,6 +5,7 @@ import { useState } from "react";
 import { decodeHtml } from "@/lib/api";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { useCart } from "@/context/CartContext";
 
 export default function ProductCard({ product, locale }) {
   const image = product.images?.[0];
@@ -15,12 +16,29 @@ export default function ProductCard({ product, locale }) {
   const p = locale === "en" ? "/en" : "";
   const href = `${p}/product/${product.slug}`;
   const [loading, setLoading] = useState(false);
+  const [added, setAdded] = useState(false);
   const router = useRouter();
+  const { addToCart } = useCart();
+
+  const isVariable = product.type === "variable";
+  const outOfStock = product.stock_status !== "instock";
 
   function handleNavigate(e) {
     e.preventDefault();
     setLoading(true);
     router.push(href);
+  }
+
+  function handleQuickAdd(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (isVariable || outOfStock) {
+      router.push(href);
+      return;
+    }
+    addToCart(product, 1, null);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 2000);
   }
 
   return (
@@ -80,36 +98,35 @@ export default function ProductCard({ product, locale }) {
         </Link>
 
         <div className="flex items-center gap-2 flex-wrap mt-1 text-text-primary">
-          <>
-            <span className="text-xl font-semibold">
-              {price.toLocaleString("nl-NL", {
-                style: "currency",
-                currency: "EUR",
-              })}
-              <sup className="text-[9px] ml-1 font-light text-text-secondary/60">
-                excl. VAT
-              </sup>
-            </span>
-            {isOnSale && regularPrice > price && (
-              <>
-                <span className="text-xl text-gray-400 line-through">
-                  {regularPrice.toLocaleString("nl-NL", {
-                    style: "currency",
-                    currency: "EUR",
-                  })}
-                </span>
-                <span className="text-xl bg-red-50 text-red-500 px-1.5 py-0.5 rounded-full font-medium">
-                  -{Math.round((1 - price / regularPrice) * 100)}%
-                </span>
-              </>
-            )}
-          </>
+          <span className="text-xl font-semibold">
+            {price.toLocaleString("nl-NL", {
+              style: "currency",
+              currency: "EUR",
+            })}
+            <sup className="text-[9px] ml-1 font-light text-text-secondary/60">
+              excl. VAT
+            </sup>
+          </span>
+          {isOnSale && regularPrice > price && (
+            <>
+              <span className="text-xl text-gray-400 line-through">
+                {regularPrice.toLocaleString("nl-NL", {
+                  style: "currency",
+                  currency: "EUR",
+                })}
+              </span>
+              <span className="text-xl bg-red-50 text-red-500 px-1.5 py-0.5 rounded-full font-medium">
+                -{Math.round((1 - price / regularPrice) * 100)}%
+              </span>
+            </>
+          )}
         </div>
 
+        {/* Bekijk product */}
         <button
           onClick={handleNavigate}
           disabled={loading}
-          className="inline-flex items-center justify-center gap-3 h-[48px] font-medium text-sm text-text-secondary mt-auto cursor-pointer uppercase py-4 px-8 rounded border border-bg-accent transition-all duration-150 hover:bg-white/20 disabled:opacity-70"
+          className="inline-flex items-center justify-center gap-3 h-[48px] font-medium text-sm text-text-secondary mt-auto cursor-pointer uppercase px-4 rounded border border-bg-accent transition-all duration-150 hover:bg-white/20 disabled:opacity-70"
         >
           {loading ? (
             <svg
@@ -133,6 +150,74 @@ export default function ProductCard({ product, locale }) {
             </svg>
           ) : (
             t("viewProduct")
+          )}
+        </button>
+
+        {/* Dodaj do koszyka */}
+        <button
+          onClick={handleQuickAdd}
+          className={`inline-flex items-center justify-center gap-2 h-[40px] text-sm cursor-pointer px-4 rounded border transition-all duration-150
+            ${
+              added
+                ? "border-green-500 text-green-400 bg-green-500/10"
+                : outOfStock
+                  ? "border-text-secondary/20 text-text-secondary/40 cursor-not-allowed"
+                  : "border-text-accent/40 text-text-accent hover:bg-text-accent hover:text-bg-primary"
+            }`}
+        >
+          {added ? (
+            <>
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+              {t("added")}
+            </>
+          ) : outOfStock ? (
+            t("outOfStock")
+          ) : isVariable ? (
+            <>
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
+                />
+              </svg>
+              {t("selectAll")}
+            </>
+          ) : (
+            <>
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
+              {t("addToCart")}
+            </>
           )}
         </button>
       </div>

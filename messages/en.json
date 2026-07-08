@@ -26,9 +26,9 @@
     "viewAll": "View all"
   },
   "product": {
-    "viewProduct": "View product",
+    "viewProduct": "Check",
     "addToCart": "Add to cart",
-    "added": "✓ Added",
+    "added": "Added",
     "sale": "Sale",
     "inStock": "✓ In stock",
     "outOfStock": "✗ Out of stock",
