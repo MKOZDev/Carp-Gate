@@ -28,7 +28,6 @@ export default function Navbar({
     return () => window.removeEventListener("scroll", handler);
   }, []);
 
-  // Zamknij mobile menu przy zmianie rozmiaru
   useEffect(() => {
     const handler = () => {
       if (window.innerWidth >= 1024) setMobileOpen(false);
@@ -56,7 +55,7 @@ export default function Navbar({
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20 ">
+          <div className="flex items-center justify-between h-20">
             {/* Logo */}
             <Link href={`${p}/`} className="flex items-center gap-3 shrink-0">
               <Image
@@ -72,7 +71,6 @@ export default function Navbar({
             <nav className="hidden lg:flex items-center gap-8">
               {menuItems.map((item) =>
                 isShopItem(item) ? (
-                  // Sklep z dropdown kategorii
                   <div key={item.ID} className="relative group">
                     <Link
                       href={cleanUrl(item.url)}
@@ -94,25 +92,42 @@ export default function Navbar({
                       </svg>
                     </Link>
 
-                    {/* Dropdown kategorii */}
-                    <div className="absolute top-full left-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                      <div className="bg-bg-secondary border border-text-secondary/10 rounded-xl shadow-xl shadow-black/30 py-2 min-w-48">
+                    {/* MEGA MENU */}
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 w-[600px]">
+                      <div className="bg-bg-secondary border border-text-secondary/10 rounded-2xl shadow-2xl shadow-black/40 p-5">
+                        {/* Link do wszystkich */}
                         <Link
                           href={`${p}/shop`}
-                          className="block px-4 py-2 text-sm text-text-secondary hover:text-text-accent hover:bg-bg-primary/50 transition-colors"
+                          className="flex items-center gap-2 text-sm font-semibold text-text-accent hover:text-text-primary transition-colors mb-4 pb-4 border-b border-text-secondary/10"
                         >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M4 6h16M4 12h16M4 18h16"
+                            />
+                          </svg>
                           {locale === "en" ? "All products" : "Alle producten"}
                         </Link>
-                        <div className="border-t border-text-secondary/10 my-1" />
-                        {categories.map((cat) => (
-                          <Link
-                            key={cat.id}
-                            href={`${p}/category/${cat.slug}`}
-                            className="block px-4 py-2 text-sm text-text-secondary hover:text-text-accent hover:bg-bg-primary/50 transition-colors"
-                          >
-                            {cat.name}
-                          </Link>
-                        ))}
+
+                        {/* 3 kolumny kategorii */}
+                        <div className="grid grid-cols-3 gap-x-6 gap-y-1">
+                          {categories.map((cat) => (
+                            <Link
+                              key={cat.id}
+                              href={`${p}/category/${cat.slug}`}
+                              className="text-sm text-text-secondary hover:text-text-accent transition-colors py-1.5 truncate"
+                            >
+                              {cat.name}
+                            </Link>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -130,9 +145,8 @@ export default function Navbar({
 
             {/* Prawa strona */}
             <div className="flex items-center gap-3">
-              <LanguageSwitcher></LanguageSwitcher>
+              <LanguageSwitcher />
 
-              {/* Koszyk */}
               <Link
                 href={`${p}/cart`}
                 className="relative p-2 text-text-secondary hover:text-text-primary transition-colors"
@@ -145,26 +159,19 @@ export default function Navbar({
                 )}
               </Link>
 
-              {/* Burger mobile */}
               <button
                 onClick={() => setMobileOpen((o) => !o)}
                 className="lg:hidden relative w-8 h-8 flex flex-col items-center justify-center gap-1.5"
                 aria-label="Menu"
               >
                 <span
-                  className={`block w-6 h-0.5 bg-text-primary transition-all duration-300 ${
-                    mobileOpen ? "rotate-45 translate-y-2" : ""
-                  }`}
+                  className={`block w-6 h-0.5 bg-text-primary transition-all duration-300 ${mobileOpen ? "rotate-45 translate-y-2" : ""}`}
                 />
                 <span
-                  className={`block h-0.5 bg-text-primary transition-all duration-300 ${
-                    mobileOpen ? "w-0 opacity-0" : "w-6"
-                  }`}
+                  className={`block h-0.5 bg-text-primary transition-all duration-300 ${mobileOpen ? "w-0 opacity-0" : "w-6"}`}
                 />
                 <span
-                  className={`block w-6 h-0.5 bg-text-primary transition-all duration-300 ${
-                    mobileOpen ? "-rotate-45 -translate-y-2" : ""
-                  }`}
+                  className={`block w-6 h-0.5 bg-text-primary transition-all duration-300 ${mobileOpen ? "-rotate-45 -translate-y-2" : ""}`}
                 />
               </button>
             </div>
@@ -174,25 +181,16 @@ export default function Navbar({
 
       {/* Mobile menu overlay */}
       <div
-        className={`fixed inset-0 z-40 lg:hidden transition-all duration-300 ${
-          mobileOpen ? "visible" : "invisible"
-        }`}
+        className={`fixed inset-0 z-40 lg:hidden transition-all duration-300 ${mobileOpen ? "visible" : "invisible"}`}
       >
-        {/* Backdrop */}
         <div
-          className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${
-            mobileOpen ? "opacity-100" : "opacity-0"
-          }`}
+          className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${mobileOpen ? "opacity-100" : "opacity-0"}`}
           onClick={() => setMobileOpen(false)}
         />
 
-        {/* Panel */}
         <div
-          className={`absolute top-0 right-0 h-full w-80 bg-bg-primary border-l border-text-secondary/10 flex flex-col transition-transform duration-300 ${
-            mobileOpen ? "translate-x-0" : "translate-x-full"
-          }`}
+          className={`absolute top-0 right-0 h-full w-80 bg-bg-primary border-l border-text-secondary/10 flex flex-col transition-transform duration-300 ${mobileOpen ? "translate-x-0" : "translate-x-full"}`}
         >
-          {/* Header panelu */}
           <div className="flex items-center justify-between p-5 border-b border-text-secondary/10 h-16">
             <span className="font-bold text-text-primary">CARP GATE</span>
             <button
@@ -215,7 +213,6 @@ export default function Navbar({
             </button>
           </div>
 
-          {/* Nawigacja mobile */}
           <nav className="flex-1 overflow-y-auto p-5 space-y-1">
             {menuItems.map((item) =>
               isShopItem(item) ? (
@@ -240,24 +237,14 @@ export default function Navbar({
                     </svg>
                   </button>
 
-                  {/* Submenu kategorii mobile */}
                   <div
-                    className={`overflow-hidden transition-all duration-300 ${
-                      shopOpen ? "max-h-72" : "max-h-0"
-                    }`}
+                    className={`overflow-hidden transition-all duration-300 ${shopOpen ? "max-h-96" : "max-h-0"}`}
                   >
-                    <div
-                      className="pl-4 py-1 space-y-1 overflow-y-auto max-h-72
-    [&::-webkit-scrollbar]:w-1
-    [&::-webkit-scrollbar-track]:bg-transparent
-    [&::-webkit-scrollbar-thumb]:bg-text-secondary/30
-    [&::-webkit-scrollbar-thumb]:rounded-full
-    [&::-webkit-scrollbar-thumb:hover]:bg-text-accent"
-                    >
+                    <div className="pl-4 py-1 space-y-1 overflow-y-auto max-h-96 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-text-secondary/30 [&::-webkit-scrollbar-thumb]:rounded-full">
                       <Link
                         href={`${p}/shop`}
                         onClick={() => setMobileOpen(false)}
-                        className="block px-3 py-2 text-sm text-text-secondary hover:text-text-accent transition-colors rounded-lg hover:bg-bg-secondary"
+                        className="block px-3 py-2 text-sm font-medium text-text-accent hover:text-text-primary transition-colors rounded-lg hover:bg-bg-secondary"
                       >
                         {locale === "en" ? "All products" : "Alle producten"}
                       </Link>
@@ -287,7 +274,6 @@ export default function Navbar({
             )}
           </nav>
 
-          {/* Dół panelu — koszyk */}
           <div className="p-5 border-t border-text-secondary/10">
             <Link
               href={`${p}/cart`}
@@ -310,7 +296,6 @@ export default function Navbar({
         </div>
       </div>
 
-      {/* Spacer żeby treść nie chowała się pod sticky headerem */}
       <div className="h-16 lg:h-20" />
     </>
   );
