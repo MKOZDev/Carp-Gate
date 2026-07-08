@@ -40,7 +40,7 @@ export default async function ShopPage({ params, searchParams }) {
         min_price: min_price || undefined,
         max_price: max_price || undefined,
         on_sale: on_sale === "true" ? true : undefined,
-        stock_status: in_stock === "true" ? "instock" : undefined,
+        stock_status: in_stock === "false" ? undefined : "instock",
         category: category || undefined,
       },
       locale,

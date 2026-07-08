@@ -176,7 +176,7 @@ export default function ShopClient({
   const [minPrice, setMinPrice] = useState(initialFilters.min_price || "");
   const [maxPrice, setMaxPrice] = useState(initialFilters.max_price || "");
   const [onSale, setOnSale] = useState(initialFilters.on_sale === "true");
-  const [inStock, setInStock] = useState(initialFilters.in_stock === "true");
+  const [inStock, setInStock] = useState(initialFilters.in_stock !== "false");
   const [category, setCategory] = useState(initialFilters.category || "");
   const [sortBy, setSortBy] = useState(initialFilters.sort_by || "default");
   const [mobileFilters, setMobileFilters] = useState(false);
@@ -192,6 +192,7 @@ export default function ShopClient({
     if (maxPrice) params.set("max_price", maxPrice);
     if (onSale) params.set("on_sale", "true");
     if (inStock) params.set("in_stock", "true");
+    else params.set("in_stock", "false"); // żeby można było odznaczyć
     if (category) params.set("category", category);
     if (sortBy !== "default") params.set("sort_by", sortBy);
     Object.entries(overrides).forEach(([k, v]) => {
@@ -212,11 +213,11 @@ export default function ShopClient({
     setMinPrice("");
     setMaxPrice("");
     setOnSale(false);
-    setInStock(false);
+    setInStock(true); // domyślnie true
     setCategory("");
     setSortBy("default");
     setIsLoading(true);
-    router.push(`${p}/shop`);
+    router.push(`${p}/shop?in_stock=true`);
   }
 
   function handleSortChange(value) {

@@ -5,11 +5,13 @@ import { useState, useRef } from "react";
 import { decodeHtml } from "@/lib/api";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { useCart } from "@/context/CartContext";
 
 export default function BestsellerCard({ product, locale }) {
   const images = product.images || [];
   const [current, setCurrent] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [added, setAdded] = useState(false);
   const touchStartX = useRef(0);
   const touchDiff = useRef(0);
   const isDragging = useRef(false);
@@ -21,6 +23,10 @@ export default function BestsellerCard({ product, locale }) {
   const p = locale === "en" ? "/en" : "";
   const href = `${p}/product/${product.slug}`;
   const router = useRouter();
+  const { addToCart } = useCart();
+
+  const isVariable = product.type === "variable";
+  const outOfStock = product.stock_status !== "instock";
 
   function go(index) {
     setCurrent((index + images.length) % images.length);
@@ -30,6 +36,18 @@ export default function BestsellerCard({ product, locale }) {
     e.preventDefault();
     setLoading(true);
     router.push(href);
+  }
+
+  function handleQuickAdd(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (isVariable || outOfStock) {
+      router.push(href);
+      return;
+    }
+    addToCart(product, 1, null);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 2000);
   }
 
   function onTouchStart(e) {
@@ -48,7 +66,6 @@ export default function BestsellerCard({ product, locale }) {
     if (Math.abs(touchDiff.current) > 40) {
       go(current + (touchDiff.current > 0 ? 1 : -1));
     }
-
     if (isDragging.current) e.preventDefault();
   }
 
@@ -105,15 +122,12 @@ export default function BestsellerCard({ product, locale }) {
             >
               ›
             </button>
-
             <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-10">
               {images.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setCurrent(i)}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
-                    i === current ? "bg-white w-3" : "bg-white/50 w-1.5"
-                  }`}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${i === current ? "bg-white w-3" : "bg-white/50 w-1.5"}`}
                 />
               ))}
             </div>
@@ -168,10 +182,11 @@ export default function BestsellerCard({ product, locale }) {
           )}
         </div>
 
+        {/* Bekijk product */}
         <button
           onClick={handleNavigate}
           disabled={loading}
-          className="inline-flex items-center justify-center gap-3 h-[48px] font-medium text-sm text-text-secondary mt-auto cursor-pointer uppercase py-4 px-8 rounded border border-bg-accent transition-all duration-150 hover:bg-white/20 disabled:opacity-70"
+          className="inline-flex items-center justify-center gap-3 h-[48px] font-medium text-sm text-text-secondary mt-auto cursor-pointer uppercase px-4 rounded border border-bg-accent transition-all duration-150 hover:bg-white/20 disabled:opacity-70"
         >
           {loading ? (
             <svg
@@ -195,6 +210,74 @@ export default function BestsellerCard({ product, locale }) {
             </svg>
           ) : (
             t("viewProduct")
+          )}
+        </button>
+
+        {/* Dodaj do koszyka */}
+        <button
+          onClick={handleQuickAdd}
+          className={`inline-flex items-center justify-center gap-2 h-[40px] text-sm cursor-pointer px-4 rounded border transition-all duration-150
+            ${
+              added
+                ? "border-green-500 text-green-400 bg-green-500/10"
+                : outOfStock
+                  ? "border-text-secondary/20 text-text-secondary/40 cursor-not-allowed"
+                  : "border-text-accent/40 text-text-accent hover:bg-text-accent hover:text-bg-primary"
+            }`}
+        >
+          {added ? (
+            <>
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+              <span className="max-lg:hidden">{t("added")}</span>
+            </>
+          ) : outOfStock ? (
+            <span className="max-lg:hidden">{t("outOfStock")}</span>
+          ) : isVariable ? (
+            <>
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
+                />
+              </svg>
+              <span className="max-lg:hidden">{t("selectAll")}</span>
+            </>
+          ) : (
+            <>
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
+              <span className="max-lg:hidden">{t("addToCart")}</span>
+            </>
           )}
         </button>
       </div>
