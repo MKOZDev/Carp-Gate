@@ -21,16 +21,11 @@ const CATEGORY_SLUGS = [
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function CategoryGrid({ categories, locale, p }) {
-  // Filtruj i sortuj według kolejności z CATEGORY_SLUGS
-  const filtered = CATEGORY_SLUGS.map((slug) =>
-    categories.find((c) => c.slug === slug),
-  ).filter(Boolean);
-
   const shopLabel = locale === "en" ? "All categories" : "Alle categorieën";
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-      {filtered.map((cat) => (
+      {categories.map((cat) => (
         <Link
           key={cat.id}
           href={`${p}/category/${cat.slug}`}

@@ -194,11 +194,26 @@ export default async function ProductPage({ params }) {
               )}
             </div>
 
-            {product.short_description && (
-              <div
-                className="text-text-secondary text-sm leading-relaxed prose prose-sm max-w-none prose-invert"
-                dangerouslySetInnerHTML={{ __html: product.short_description }}
-              />
+            {product.attributes?.filter((a) => !a.name.startsWith("BTW"))
+              .length > 0 && (
+              <div className="flex flex-col gap-1">
+                {product.attributes
+                  .filter((a) => !a.name.startsWith("BTW"))
+                  .slice(0, 4)
+                  .map((attr) => (
+                    <div
+                      key={attr.name}
+                      className="text-xs text-text-secondary"
+                    >
+                      <span className="text-text-secondary/60">
+                        {attr.name}:{" "}
+                      </span>
+                      <span className="text-text-primary">
+                        {attr.options?.join(", ")}
+                      </span>
+                    </div>
+                  ))}
+              </div>
             )}
 
             <AddToCartButton product={product} />

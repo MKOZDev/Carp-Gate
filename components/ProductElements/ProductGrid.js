@@ -1,6 +1,10 @@
 import ProductCard from "./ProductCard";
 
-export default function ProductGrid({ products, locale = "nl" }) {
+export default function ProductGrid({
+  products,
+  locale = "nl",
+  mainCatIds = new Set(),
+}) {
   if (!products?.length) {
     return (
       <div className="py-16 text-center">
@@ -11,7 +15,12 @@ export default function ProductGrid({ products, locale = "nl" }) {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 lg:gap-6 md:ga">
       {products.map((product) => (
-        <ProductCard key={product.id} product={product} locale={locale} />
+        <ProductCard
+          key={product.id}
+          product={product}
+          locale={locale}
+          mainCatIds={mainCatIds}
+        />
       ))}
     </div>
   );
