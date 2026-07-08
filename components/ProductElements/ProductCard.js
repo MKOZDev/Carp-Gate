@@ -86,6 +86,9 @@ export default function ProductCard({ product, locale }) {
                 style: "currency",
                 currency: "EUR",
               })}
+              <sup className="text-[9px] ml-1 font-light text-text-secondary/60">
+                excl. VAT
+              </sup>
             </span>
             {isOnSale && regularPrice > price && (
               <>
