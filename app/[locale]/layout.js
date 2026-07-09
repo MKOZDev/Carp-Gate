@@ -1,5 +1,5 @@
 import { NextIntlClientProvider } from "next-intl";
-import Script from "next/script";
+
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { CartProvider } from "@/context/CartContext";
@@ -138,44 +138,7 @@ export default async function LocaleLayout({ children, params }) {
 
   return (
     <html lang={locale} className={`${inter.variable} ${manrope.variable}`}>
-      <head>
-        <Script
-          id="Cookiebot"
-          src="https://consent.cookiebot.com/uc.js"
-          data-cbid="494319d4-dd85-4387-abb8-d034ded4ea83"
-          data-blockingmode="auto"
-          type="text/javascript"
-        />
-        <Script
-          id="schema-org"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Store",
-              name: "Carp Gate",
-              url: "https://carpgate.com",
-              logo: "https://carpgate.com/logo.png",
-              image: "https://carpgate.com/og-image.jpg",
-              description: "Hoogwaardige karperuitrusting online bestellen",
-              email: "carpgatee@gmail.com",
-              telephone: "+31652368685",
-              address: {
-                "@type": "PostalAddress",
-                streetAddress: "Zwaardvegersgaarde 48",
-                postalCode: "2542 TE",
-                addressLocality: "Den Haag",
-                addressCountry: "NL",
-              },
-              priceRange: "€€",
-              currenciesAccepted: "EUR",
-              paymentAccepted: "iDEAL, Credit Card, PayPal, Klarna",
-              areaServed: ["NL", "BE"],
-              sameAs: [],
-            }),
-          }}
-        />
-      </head>
+      <head></head>
       <body className="min-h-screen flex flex-col bg-bg-primary text-text-primary antialiased font-[family-name:var(--font-manrope)]">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <CartProvider>
