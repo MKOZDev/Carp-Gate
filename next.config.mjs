@@ -29,7 +29,8 @@ const nextConfig = {
       },
     ],
     dangerouslyAllowSVG: true,
-    unoptimized: process.env.NODE_ENV === "development",
+    // unoptimized: process.env.NODE_ENV === "development",
+    unoptimized: true,
   },
 };
 
