@@ -55,7 +55,12 @@ export default async function ProductPage({ params }) {
   const [{ products: relatedRaw }, reviews] = await Promise.all([
     firstCategoryId
       ? getProducts(
-          { category: firstCategoryId, per_page: 5, exclude: product.id },
+          {
+            category: firstCategoryId,
+            per_page: 5,
+            exclude: product.id,
+            stock_status: "instock",
+          },
           locale,
         )
       : Promise.resolve({ products: [] }),
