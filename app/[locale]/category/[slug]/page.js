@@ -31,7 +31,12 @@ export default async function CategoryPage({ params, searchParams }) {
   if (!category) notFound();
 
   const { products, totalPages, totalCount } = await getProducts(
-    { category: category.id, per_page: 20, page: currentPage },
+    {
+      category: category.id,
+      per_page: 20,
+      page: currentPage,
+      stock_status: "instock",
+    },
     locale,
   );
 

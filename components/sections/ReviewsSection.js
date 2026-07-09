@@ -57,7 +57,7 @@ function ReviewCard({ review }) {
   return (
     <div className="bg-bg-secondary rounded-2xl p-6 flex flex-col gap-3 flex-shrink-0 h-full">
       <p
-        className="text-text-secondary text-sm leading-relaxed flex-1 line-clamp-4"
+        className="text-text-secondary text-sm leading-relaxed flex-1"
         dangerouslySetInnerHTML={{ __html: review.review }}
       />
       <div className="flex flex-col gap-1 mt-auto pt-3 border-t border-text-secondary/10">
@@ -66,7 +66,7 @@ function ReviewCard({ review }) {
           {review.reviewer}
         </p>
         {review.product_name && (
-          <p className="text-text-secondary/50 text-xs">
+          <p className="text-text-secondary/50 text-xs line-clamp-1">
             {review.product_name}
           </p>
         )}

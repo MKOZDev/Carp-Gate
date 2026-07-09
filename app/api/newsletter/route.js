@@ -8,26 +8,20 @@ export async function POST(request) {
       return NextResponse.json({ error: "invalid" }, { status: 400 });
     }
 
-    const res = await fetch(
-      `https://${process.env.MAILCHIMP_SERVER}.api.mailchimp.com/3.0/lists/${process.env.MAILCHIMP_LIST_ID}/members`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `apikey ${process.env.MAILCHIMP_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email_address: email,
-          status: "subscribed",
-          language: locale || "nl",
-          tags: ["website"],
-        }),
+    const res = await fetch("https://connect.mailerlite.com/api/subscribers", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.MAILERLITE_API_KEY}`,
       },
-    );
+      body: JSON.stringify({
+        email,
+        groups: [process.env.MAILERLITE_GROUP_ID],
+        fields: { language: locale || "nl" },
+      }),
+    });
 
-    const data = await res.json();
-
-    if (data.title === "Member Exists") {
+    if (res.status === 409) {
       return NextResponse.json({ error: "exists" }, { status: 400 });
     }
     if (!res.ok) {
