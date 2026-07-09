@@ -11,8 +11,7 @@ export default function RootLayout({ children }) {
           data-blockingmode="auto"
           type="text/javascript"
         />
-        <Script
-          id="schema-org"
+        <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
