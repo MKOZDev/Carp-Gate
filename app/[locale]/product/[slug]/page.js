@@ -11,10 +11,11 @@ import Link from "next/link";
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  // Tylko NL — EN slugi są takie same lub WPML je mapuje
-  // per_page: 50 zamiast 100 dla szybszego buildu
-  const { products } = await getProducts({ per_page: 50 }, "nl");
-  return products.map((p) => ({ locale: "nl", slug: p.slug }));
+  const { products } = await getProducts({ per_page: 100 }, "nl");
+  return [
+    ...products.map((p) => ({ locale: "nl", slug: p.slug })),
+    ...products.map((p) => ({ locale: "en", slug: p.slug })),
+  ];
 }
 
 export async function generateMetadata({ params }) {

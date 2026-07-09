@@ -14,6 +14,7 @@ import Newsletter from "@/components/sections/Newsletter";
 import BestsellerSlider from "@/components/ProductElements/Bestsellerslider";
 import CategorySection from "@/components/sections/CategorySection";
 import PromoSection from "@/components/ui/Promosection";
+import ImporterBanner from "@/components/sections/ImporterBanner";
 
 export async function generateMetadata({ params }) {
   const { locale } = await params;
@@ -38,6 +39,7 @@ export default async function HomePage({ params }) {
   return (
     <>
       <Hero locale={locale} />
+      <ImporterBanner locale={locale} />
 
       <AboutUs locale={locale} />
 

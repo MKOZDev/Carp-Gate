@@ -16,6 +16,17 @@ export default async function ShopPage({ params, searchParams }) {
 
   const currentPage = parseInt(page || "1");
   const { sort_by } = (await searchParams) || {};
+
+  // Znajdź NL ID kategorii jeśli locale === "en"
+  let categoryId = category || undefined;
+
+  console.log("Final categoryId:", categoryId);
+  console.log(
+    "category param:",
+    category,
+    "categoryId after translation:",
+    categoryId,
+  );
   function getSortParams(sortBy) {
     switch (sortBy) {
       case "name_asc":
@@ -30,7 +41,6 @@ export default async function ShopPage({ params, searchParams }) {
         return {};
     }
   }
-
   const [{ products, totalPages }, categories] = await Promise.all([
     getProducts(
       {
@@ -41,12 +51,20 @@ export default async function ShopPage({ params, searchParams }) {
         max_price: max_price || undefined,
         on_sale: on_sale === "true" ? true : undefined,
         stock_status: in_stock === "false" ? undefined : "instock",
-        category: category || undefined,
+        category: categoryId,
       },
       locale,
     ),
     getCategories(locale),
   ]);
+  console.log(
+    "Products count:",
+    products.length,
+    "categoryId used:",
+    categoryId,
+    "locale:",
+    locale,
+  );
 
   return (
     <ShopClient
