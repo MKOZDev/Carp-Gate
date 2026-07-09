@@ -54,8 +54,8 @@ export default function PromoSection({ coupon, locale }) {
 
   const discount =
     coupon.discount_type === "percent"
-      ? `${coupon.amount}%`
-      : `€${coupon.amount}`;
+      ? `${parseFloat(coupon.amount)}%`
+      : `€${parseFloat(coupon.amount)}`;
 
   function copyCode() {
     navigator.clipboard.writeText(coupon.code.toUpperCase());
@@ -96,12 +96,12 @@ export default function PromoSection({ coupon, locale }) {
             </div>
             <button
               onClick={copyCode}
-              className="px-5 py-3 bg-text-accent cursor-pointer text-bg-primary rounded-xl text-sm font-medium hover:opacity-90 transition-all whitespace-nowrap"
+              className="px-5 py-3 bg-text-accent min-w-[130px] cursor-pointer text-bg-primary rounded-xl text-sm font-medium hover:opacity-90 transition-all whitespace-nowrap"
             >
               {copied
                 ? locale === "en"
-                  ? "Copied! ✓"
-                  : "Gekopieerd! ✓"
+                  ? "✓"
+                  : "✓"
                 : locale === "en"
                   ? "Copy code"
                   : "Kopieer code"}

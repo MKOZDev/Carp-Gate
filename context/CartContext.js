@@ -87,7 +87,8 @@ export function CartProvider({ children }) {
     }));
 
     const itemsJson = encodeURIComponent(JSON.stringify(items));
-    return `${base}/?add_items=${itemsJson}&clear_next=1&lang=${locale}`;
+    const cleanBase = base.replace(/\/$/, "");
+    return `${cleanBase}/?add_items=${itemsJson}&clear_next=1&lang=${locale}`;
   }, [cart, locale]);
 
   return (
