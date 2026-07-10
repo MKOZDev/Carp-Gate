@@ -274,8 +274,39 @@ export default async function Footer({ locale = "nl" }) {
           </div>
         </div>
 
-        <div className="border-t border-text-secondary/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div className="flex flex-col items-center sm:items-start gap-4">
+        <div className="border-t border-text-secondary/10 pt-8 flex flex-col gap-6">
+          {/* Górny rząd — płatności i kurier */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div className="flex flex-col items-center sm:items-start gap-2">
+              <p className="text-xs text-text-secondary uppercase tracking-widest">
+                {locale === "en" ? "Payment methods" : "Betaalmethoden"}
+              </p>
+              <div className="flex items-center justify-center gap-2 flex-wrap">
+                <MollieIcon />
+                <VisaIcon />
+                <MastercardIcon />
+                <ApplePayIcon />
+                <PayPalIcon />
+                <KlarnaIcon />
+              </div>
+            </div>
+
+            <div className="flex flex-col items-center sm:items-end gap-2">
+              <p className="text-xs text-text-secondary uppercase tracking-widest">
+                {locale === "en" ? "Delivered by" : "Bezorgd door"}
+              </p>
+              <Image
+                src="/dpd.png"
+                alt="DPD"
+                width={80}
+                height={40}
+                className="object-contain"
+              />
+            </div>
+          </div>
+
+          {/* Onderste rij — copyright en made by */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-xs text-center sm:text-left text-text-secondary uppercase tracking-widest">
               © {new Date().getFullYear()} Carp Gate BV ·{" "}
               {locale === "en"
@@ -283,30 +314,20 @@ export default async function Footer({ locale = "nl" }) {
                 : "Alle rechten voorbehouden"}
               .
             </p>
-
-            <div className="flex items-center gap-2 flex-wrap">
-              <MollieIcon />
-              <VisaIcon />
-              <MastercardIcon />
-              <ApplePayIcon />
-              <PayPalIcon />
-              <KlarnaIcon />
-            </div>
+            <Link
+              href="https://www.mkozdev.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Image
+                src="/made-by.webp"
+                alt="mkozdev"
+                width={224}
+                height={20}
+                className="object-contain"
+              />
+            </Link>
           </div>
-
-          <Link
-            href="https://www.mkozdev.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              src="/made-by.webp"
-              alt="mkozdev"
-              width={224}
-              height={20}
-              className="object-contain"
-            />
-          </Link>
         </div>
       </div>
     </footer>
