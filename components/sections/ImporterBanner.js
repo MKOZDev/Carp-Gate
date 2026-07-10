@@ -6,12 +6,13 @@ export default function ImporterBanner({ locale }) {
       ? {
           title: "Official importer of Tandem Baits® in the Netherlands",
           subtitle: "Quality you can trust!",
+          years: "More than 20 years on the market.",
         }
       : {
           title: "Officiële importeur van Tandem Baits® in Nederland",
           subtitle: "Kwaliteit waarop je kunt vertrouwen!",
+          years: "Meer dan 20 jaar op de markt.",
         };
-
   return (
     <div className="bg-bg-secondary border-y border-text-secondary/10 py-4">
       <div className="max-w-7xl w-full m-auto max-xl:px-4 flex items-center justify-center gap-4 flex-wrap">
@@ -28,6 +29,9 @@ export default function ImporterBanner({ locale }) {
           </span>
           <span className="text-text-secondary text-center text-sm">
             {text.subtitle}
+          </span>
+          <span className="text-text-accent text-center text-sm font-medium">
+            {text.years}
           </span>
         </div>
       </div>
