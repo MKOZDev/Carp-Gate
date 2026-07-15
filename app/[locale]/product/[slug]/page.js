@@ -200,7 +200,7 @@ export default async function ProductPage({ params }) {
               )}
             </div>
 
-            {product.attributes?.filter((a) => !a.name.startsWith("BTW"))
+            {/* {product.attributes?.filter((a) => !a.name.startsWith("BTW"))
               .length > 0 && (
               <div className="flex flex-col gap-1">
                 {product.attributes
@@ -220,7 +220,7 @@ export default async function ProductPage({ params }) {
                     </div>
                   ))}
               </div>
-            )}
+            )} */}
 
             <AddToCartButton product={product} />
 
