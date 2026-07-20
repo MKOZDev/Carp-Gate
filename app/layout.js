@@ -1,4 +1,5 @@
 import Script from "next/script";
+import { GoogleTagManager } from "@next/third-parties/google";
 
 export default function RootLayout({ children }) {
   return (
@@ -38,6 +39,7 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body>{children}</body>
+      <GoogleTagManager gtmId="G-216004Y8LW" />
     </html>
   );
 }
