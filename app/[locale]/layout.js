@@ -1,9 +1,10 @@
 import { NextIntlClientProvider } from "next-intl";
-
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { CartProvider } from "@/context/CartContext";
 import { Inter, Manrope } from "next/font/google";
+import Script from "next/script";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "../globals.css";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
@@ -138,7 +139,41 @@ export default async function LocaleLayout({ children, params }) {
 
   return (
     <html lang={locale} className={`${inter.variable} ${manrope.variable}`}>
-      <head></head>
+      <head>
+        <Script
+          id="Cookiebot"
+          src="https://consent.cookiebot.com/uc.js"
+          data-cbid="494319d4-dd85-4387-abb8-d034ded4ea83"
+          data-blockingmode="auto"
+          type="text/javascript"
+          strategy="afterInteractive"
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Store",
+              name: "Carp Gate",
+              url: "https://carpgate.com",
+              logo: "https://carpgate.com/logo.png",
+              email: "carpgatee@gmail.com",
+              telephone: "+31652368685",
+              address: {
+                "@type": "PostalAddress",
+                streetAddress: "Zwaardvegersgaarde 48",
+                postalCode: "2542 TE",
+                addressLocality: "Den Haag",
+                addressCountry: "NL",
+              },
+              priceRange: "€€",
+              currenciesAccepted: "EUR",
+              paymentAccepted: "iDEAL, Credit Card, PayPal, Klarna",
+              areaServed: ["NL", "BE"],
+            }),
+          }}
+        />
+      </head>
       <body className="min-h-screen flex flex-col bg-bg-primary text-text-primary antialiased font-[family-name:var(--font-manrope)]">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <CartProvider>
@@ -152,6 +187,7 @@ export default async function LocaleLayout({ children, params }) {
             <ScrollToTop />
           </CartProvider>
         </NextIntlClientProvider>
+        <GoogleAnalytics gaId="G-216004Y8LW" />
       </body>
     </html>
   );
