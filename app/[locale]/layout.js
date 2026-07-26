@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/next-script-for-ga */
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -140,6 +141,16 @@ export default async function LocaleLayout({ children, params }) {
   return (
     <html lang={locale} className={`${inter.variable} ${manrope.variable}`}>
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','GTM-TX7RHPZM');`,
+          }}
+        />
+
         <Script
           id="Cookiebot"
           src="https://consent.cookiebot.com/uc.js"
@@ -175,6 +186,15 @@ export default async function LocaleLayout({ children, params }) {
         />
       </head>
       <body className="min-h-screen flex flex-col bg-bg-primary text-text-primary antialiased font-[family-name:var(--font-manrope)]">
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-TX7RHPZM"
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          />
+        </noscript>
+
         <NextIntlClientProvider locale={locale} messages={messages}>
           <CartProvider>
             <PageLoader />
