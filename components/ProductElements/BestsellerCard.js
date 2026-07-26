@@ -70,7 +70,7 @@ export default function BestsellerCard({ product, locale }) {
   }
 
   return (
-    <div className="group flex flex-col bg-bg-primary rounded border border-transparent h-full hover:border-text-accent duration-150 hover:-translate-y-0.5">
+    <div className="group flex flex-col bg-bg-secondary rounded border border-transparent h-full hover:border-text-accent duration-150 hover:-translate-y-0.5">
       <div
         className="relative aspect-square overflow-hidden rounded select-none"
         onTouchStart={onTouchStart}
@@ -90,7 +90,7 @@ export default function BestsellerCard({ product, locale }) {
               draggable={false}
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-bg-primary">
+            <div className="w-full h-full flex items-center justify-center bg-bg-secondary">
               <svg
                 className="w-12 h-12 text-gray-300"
                 fill="none"

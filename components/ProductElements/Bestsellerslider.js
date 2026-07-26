@@ -78,6 +78,7 @@ export default function BestsellerSlider({ products, locale }) {
     dragDiff.current = 0;
   }
 
+  // eslint-disable-next-line react-hooks/refs
   const dragOffset = isPointerDown ? dragDiff.current : 0;
   const translateX = -(index * cardWidth) + dragOffset;
 

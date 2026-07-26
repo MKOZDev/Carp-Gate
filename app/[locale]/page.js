@@ -4,6 +4,7 @@ import {
   getCategories,
   getLatestReviews,
   getActiveCoupon,
+  getProductsByCategorySlug,
 } from "@/lib/api";
 import Hero from "@/components/sections/Hero/Hero";
 import AboutUs from "@/components/sections/AboutUs";
@@ -28,12 +29,13 @@ export default async function HomePage({ params }) {
   const tR = await getTranslations({ locale, namespace: "reviews" });
   const p = locale === "en" ? "/en" : "";
 
-  const [{ products: featured }, categories, reviews, coupon] =
+  const [{ products: featured }, categories, reviews, coupon, voordeelsets] =
     await Promise.all([
       getProducts({ featured: true, per_page: 12 }, locale),
       getCategories(locale),
       getLatestReviews(12),
       getActiveCoupon(),
+      getProductsByCategorySlug("carpgate-voordeelsets", locale, 12),
     ]);
 
   return (
@@ -41,10 +43,21 @@ export default async function HomePage({ params }) {
       <Hero locale={locale} />
       <ImporterBanner locale={locale} />
 
+      {voordeelsets.length > 0 && (
+        <section className="relative bg-bg-primary w-full py-24 max-sm:py-8 flex items-start overflow-hidden z-2">
+          <Wrapper>
+            <HeadingBox
+              accent={t("voordeelsetsAccent")}
+              title={t("voordeelsets")}
+            />
+            <BestsellerSlider products={voordeelsets} locale={locale} />
+          </Wrapper>
+        </section>
+      )}
       <AboutUs locale={locale} />
 
       {featured.length > 0 && (
-        <section className="bg-bg-secondary py-24 max-sm:py-8">
+        <section className="bg-bg-primary py-24 max-sm:py-8">
           <Wrapper>
             <HeadingBox accent={t("featuredAccent")} title={t("featured")} />
             <BestsellerSlider products={featured} locale={locale} />
