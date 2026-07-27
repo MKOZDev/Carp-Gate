@@ -39,35 +39,46 @@ export async function generateMetadata({ params }) {
 
   return {
     metadataBase: new URL(BASE_URL),
+
     title: {
       default: isEn
-        ? "Carp Gate | Premium Carp Fishing Gear"
-        : "Carp Gate | Hoogwaardige Karperuitrusting",
-      template: "%s | Carp Gate",
+        ? "CarpGate | Premium Carp Fishing Shop in Europe"
+        : "CarpGate | Dé online karperviswinkel van Nederland",
+      template: "%s | CarpGate",
     },
+
     description: isEn
-      ? "Shop premium carp fishing gear at Carp Gate. Rods, reels, hooks, clothing and more. Fast EU shipping from Utrecht."
-      : "Koop hoogwaardige karperuitrusting bij Carp Gate. Hengels, molens, haken, kleding en meer. Snelle levering vanuit Utrecht.",
+      ? "CarpGate is your specialist carp fishing shop. Discover boilies, pop-ups, wafters, pellets, rods, reels and premium carp fishing equipment."
+      : "CarpGate is dé online karperviswinkel van Nederland. Ontdek boilies, pop-ups, wafters, pellets, karperhengels, molens en hoogwaardige karperuitrusting.",
+
     keywords: isEn
       ? [
-          "carp fishing",
-          "carp gear",
-          "fishing rods",
-          "fishing reels",
-          "carp hooks",
-          "carp clothing",
+          "carp fishing shop",
+          "carp fishing gear",
+          "carp rods",
+          "carp reels",
+          "boilies",
+          "pop ups",
+          "carp bait",
+          "Tandem Baits",
         ]
       : [
+          "karperviswinkel",
           "karpervissen",
           "karperuitrusting",
           "karperhengels",
           "karpermolens",
-          "karperhaken",
-          "karperkleding",
+          "boilies",
+          "pop ups",
+          "wafters",
+          "karperaas",
+          "Tandem Baits",
         ],
-    authors: [{ name: "Carp Gate" }],
-    creator: "Carp Gate",
-    publisher: "Carp Gate",
+
+    authors: [{ name: "CarpGate" }],
+    creator: "CarpGate",
+    publisher: "CarpGate",
+
     robots: {
       index: true,
       follow: true,
@@ -79,35 +90,47 @@ export async function generateMetadata({ params }) {
         "max-snippet": -1,
       },
     },
+
     openGraph: {
       type: "website",
       locale: isEn ? "en_GB" : "nl_NL",
       alternateLocale: isEn ? "nl_NL" : "en_GB",
+
       url: isEn ? `${BASE_URL}/en` : BASE_URL,
-      siteName: "Carp Gate",
+
+      siteName: "CarpGate",
+
       title: isEn
-        ? "Carp Gate | Premium Carp Fishing Gear"
-        : "Carp Gate | Hoogwaardige Karperuitrusting",
+        ? "CarpGate | Premium Carp Fishing Shop"
+        : "CarpGate | Dé online karperviswinkel van Nederland",
+
       description: isEn
-        ? "Shop premium carp fishing gear at Carp Gate. Fast EU shipping from Utrecht."
-        : "Koop hoogwaardige karperuitrusting bij Carp Gate. Snelle levering vanuit Utrecht.",
+        ? "Premium carp fishing equipment, bait and accessories for carp anglers across Europe."
+        : "Alles voor karpervissers. Boilies, pop-ups, pellets, hengels, molens en professionele karperuitrusting.",
+
       images: [
         {
           url: `${BASE_URL}/og-image.jpg`,
           width: 1200,
           height: 630,
-          alt: "Carp Gate",
+          alt: "CarpGate karperviswinkel",
         },
       ],
     },
+
     twitter: {
       card: "summary_large_image",
-      title: "Carp Gate | Premium Carp Fishing Gear",
+      title: isEn
+        ? "CarpGate | Premium Carp Fishing Shop"
+        : "CarpGate | Dé online karperviswinkel van Nederland",
+
       description: isEn
-        ? "Shop premium carp fishing gear. Fast EU shipping."
-        : "Koop hoogwaardige karperuitrusting. Snelle levering.",
+        ? "Premium carp fishing gear, bait and accessories."
+        : "Hoogwaardige karperuitrusting, aas en accessoires voor iedere karpervisser.",
+
       images: [`${BASE_URL}/og-image.jpg`],
     },
+
     alternates: {
       canonical: isEn ? `${BASE_URL}/en` : BASE_URL,
       languages: {
@@ -115,9 +138,7 @@ export async function generateMetadata({ params }) {
         en: `${BASE_URL}/en`,
       },
     },
-    verification: {
-      google: "",
-    },
+
     icons: {
       icon: "/logo.png",
       apple: "/logo.png",
@@ -158,12 +179,22 @@ export default async function LocaleLayout({ children, params }) {
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "Store",
-              name: "Carp Gate",
+              "@type": "OnlineStore",
+              name: "CarpGate",
+              alternateName: "CarpGate Karperviswinkel",
+
               url: "https://carpgate.com",
-              logo: "https://carpgate.com/logo.png",
+
+              logo: {
+                "@type": "ImageObject",
+                url: "https://carpgate.com/logo.png",
+              },
+              description:
+                "CarpGate is dé online karperviswinkel van Nederland. Ontdek boilies, pop-ups, wafters, pellets, karperhengels, molens en professionele karperuitrusting voor iedere karpervisser.",
+
               email: "carpgatee@gmail.com",
               telephone: "+31652368685",
+
               address: {
                 "@type": "PostalAddress",
                 streetAddress: "Zwaardvegersgaarde 48",
@@ -174,7 +205,93 @@ export default async function LocaleLayout({ children, params }) {
               priceRange: "€€",
               currenciesAccepted: "EUR",
               paymentAccepted: "iDEAL, Credit Card, PayPal, Klarna",
-              areaServed: ["NL", "BE"],
+              areaServed: [
+                {
+                  "@type": "Country",
+                  name: "Netherlands",
+                },
+                {
+                  "@type": "Country",
+                  name: "Belgium",
+                },
+              ],
+              knowsAbout: [
+                "Karpervissen",
+                "Karperuitrusting",
+                "Boilies",
+                "Pop-ups",
+                "Wafters",
+                "Pellets",
+                "Karperhengels",
+                "Karpermolens",
+                "Tandem Baits",
+              ],
+              brand: {
+                "@type": "Brand",
+                name: "CarpGate",
+              },
+              sameAs: [
+                "https://www.instagram.com/carpgate",
+                "https://www.facebook.com/carpgate",
+              ],
+              hasOfferCatalog: {
+                "@type": "OfferCatalog",
+                name: "CarpGate categorieën",
+                itemListElement: [
+                  {
+                    "@type": "OfferCatalog",
+                    name: "Aas & Karpervoer",
+                  },
+                  {
+                    "@type": "OfferCatalog",
+                    name: "Karpermolens & hengels",
+                  },
+                  {
+                    "@type": "OfferCatalog",
+                    name: "CarpGate Voordeelsets",
+                  },
+                  {
+                    "@type": "OfferCatalog",
+                    name: "Dips, boosters en liquids",
+                  },
+                  {
+                    "@type": "OfferCatalog",
+                    name: "Vislijnen & onderlijnen",
+                  },
+                  {
+                    "@type": "OfferCatalog",
+                    name: "End-tackle",
+                  },
+                  {
+                    "@type": "OfferCatalog",
+                    name: "Carp Care",
+                  },
+                  {
+                    "@type": "OfferCatalog",
+                    name: "Beetmelders & toebehoren",
+                  },
+                  {
+                    "@type": "OfferCatalog",
+                    name: "Pods & sticks",
+                  },
+                  {
+                    "@type": "OfferCatalog",
+                    name: "Kleding",
+                  },
+                  {
+                    "@type": "OfferCatalog",
+                    name: "Nachtvissen",
+                  },
+                  {
+                    "@type": "OfferCatalog",
+                    name: "Opbergen",
+                  },
+                  {
+                    "@type": "OfferCatalog",
+                    name: "Accessories",
+                  },
+                ],
+              },
             }),
           }}
         />

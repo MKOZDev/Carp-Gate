@@ -4,12 +4,12 @@ import PrimaryBtn from "@/components/ui/PrimaryBtn";
 
 export default function HeroContent({ title, subtitle, cta, href }) {
   return (
-    <div className="flex flex-col items-start gap-8 relative max-w-xl">
+    <div className="flex flex-col items-start gap-8 relative max-w-3xl">
       <motion.h1
         initial={{ opacity: 0, x: -40 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6, delay: 0.6, ease: "easeOut" }}
-        className="text-7xl font-bold uppercase text-text-primary max-sm:text-5xl"
+        className="text-5xl font-bold uppercase text-text-primary max-sm:text-3xl"
       >
         {title}
       </motion.h1>
