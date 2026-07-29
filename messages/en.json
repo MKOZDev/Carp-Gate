@@ -45,7 +45,8 @@
     "checkout": "Checkout →",
     "secureCheckout": "Secure payment via WooCommerce.",
     "remove": "Remove",
-    "pieces": "pc"
+    "pieces": "pc",
+    "redirecting": "Redirecting to checkout..."
   },
   "shop": {
     "title": "Shop",

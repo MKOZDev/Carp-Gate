@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
 import { useCart } from "@/context/CartContext";
@@ -19,18 +20,41 @@ export default function CartPage() {
     mounted,
   } = useCart();
   const p = locale === "en" ? "/en" : "";
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
+  useEffect(() => {
+    function handlePageShow(event) {
+      if (event.persisted) {
+        setIsRedirecting(false);
+      }
+    }
+    window.addEventListener("pageshow", handlePageShow);
+    return () => window.removeEventListener("pageshow", handlePageShow);
+  }, []);
 
   function handleCheckout() {
+    setIsRedirecting(true);
     document.cookie = `next_locale=${locale}; path=/; SameSite=Lax`;
     const url = buildCheckoutUrl();
-    clearCart();
     window.location.href = url;
+    setTimeout(() => {
+      clearCart();
+    }, 300);
   }
 
   if (!mounted) {
     return (
       <div className="bg-bg-primary min-h-screen flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-text-secondary/20 border-t-text-accent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (isRedirecting) {
+    return (
+      <div className="bg-bg-primary min-h-screen flex flex-col items-center justify-center gap-4">
+        <div className="w-10 h-10 border-2 border-text-secondary/20 border-t-text-accent rounded-full animate-spin" />
+        <p className="text-text-secondary text-sm">{t("redirecting")}</p>
       </div>
     );
   }
@@ -63,7 +87,14 @@ export default function CartPage() {
   }
 
   return (
-    <div className="bg-bg-primary min-h-screen">
+    <div className="bg-bg-primary min-h-screen relative">
+      {isRedirecting && (
+        <div className="fixed inset-0 bg-bg-primary/80 backdrop-blur-sm z-50 flex flex-col items-center justify-center gap-4">
+          <div className="w-10 h-10 border-2 border-text-secondary/20 border-t-text-accent rounded-full animate-spin" />
+          <p className="text-text-secondary text-sm">{t("redirecting")}</p>
+        </div>
+      )}
+
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 md:py-16">
         <h1 className="text-3xl font-bold mb-10 text-text-primary">
           {t("title")}
@@ -195,9 +226,17 @@ export default function CartPage() {
 
           <button
             onClick={handleCheckout}
-            className="w-full md:w-80 inline-flex items-center cursor-pointer justify-center gap-3 font-medium text-md text-text-secondary uppercase py-4 px-8 rounded border border-text-accent transition-all duration-150 hover:bg-white/10"
+            disabled={isRedirecting}
+            className="w-full md:w-80 inline-flex items-center cursor-pointer justify-center gap-3 font-medium text-md text-text-secondary uppercase py-4 px-8 rounded border border-text-accent transition-all duration-150 hover:bg-white/10 disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            {t("checkout")}
+            {isRedirecting ? (
+              <>
+                <span className="w-4 h-4 border-2 border-text-secondary/30 border-t-text-accent rounded-full animate-spin" />
+                {t("redirecting")}
+              </>
+            ) : (
+              t("checkout")
+            )}
           </button>
 
           <p className="text-xs text-text-secondary/60">

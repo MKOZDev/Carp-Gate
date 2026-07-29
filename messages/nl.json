@@ -46,7 +46,8 @@
     "checkout": "Afrekenen →",
     "secureCheckout": "Veilig betalen via WooCommerce.",
     "remove": "Verwijderen",
-    "pieces": "stuk"
+    "pieces": "stuk",
+    "redirecting": "Doorverwijzen naar afrekenen..."
   },
   "shop": {
     "title": "Winkel",
