@@ -82,8 +82,8 @@ export default async function ContactPage({ params }) {
     {
       icon: Mail,
       label: "Email",
-      value: "carpgatee@gmail.com",
-      href: "mailto:carpgatee@gmail.com",
+      value: "info@carpgate.com",
+      href: "mailto:info@carpgate.com",
     },
     {
       icon: Phone,

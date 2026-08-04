@@ -32,6 +32,12 @@ export default function CartPage() {
     window.addEventListener("pageshow", handlePageShow);
     return () => window.removeEventListener("pageshow", handlePageShow);
   }, []);
+  useEffect(() => {
+    if (mounted && cart.length > 0) {
+      gtmViewCart(cart);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mounted]);
 
   function handleCheckout() {
     gtmViewCart(cart);

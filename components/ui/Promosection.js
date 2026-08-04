@@ -20,28 +20,6 @@ function Countdown({ expiryDate, locale }) {
   }, [expiryDate]);
 
   if (!timeLeft) return null;
-
-  const labels =
-    locale === "en"
-      ? ["days", "hours", "min", "sec"]
-      : ["dagen", "uren", "min", "sec"];
-
-  return (
-    <div className="flex items-center gap-2">
-      {[timeLeft.d, timeLeft.h, timeLeft.m, timeLeft.s].map((val, i) => (
-        <div key={i} className="flex flex-col items-center">
-          <div className="bg-bg-primary/40 border border-white/10 rounded-lg px-3 py-1.5 min-w-[48px] text-center">
-            <span className="text-xl font-bold text-text-primary font-mono">
-              {String(val).padStart(2, "0")}
-            </span>
-          </div>
-          <span className="text-xs text-text-secondary/60 mt-1">
-            {labels[i]}
-          </span>
-        </div>
-      ))}
-    </div>
-  );
 }
 
 export default function PromoSection({ coupon, locale }) {

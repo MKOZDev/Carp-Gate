@@ -210,7 +210,7 @@ export default async function Footer({ locale = "nl" }) {
               {locale === "en" ? "Shop" : "Winkel"}
             </h3>
             <ul className="space-y-3">
-              {categories.slice(0, 8).map((cat) => (
+              {categories.slice(0, 9).map((cat) => (
                 <li key={cat.id}>
                   <Link
                     href={`${p}/category/${cat.slug}`}
@@ -220,6 +220,17 @@ export default async function Footer({ locale = "nl" }) {
                   </Link>
                 </li>
               ))}
+              {categories.length > 9 && (
+                <li>
+                  <Link
+                    href={`${p}/shop`}
+                    className="text-sm text-text-accent hover:text-white transition-colors"
+                  >
+                    + {categories.length - 9}{" "}
+                    {locale === "en" ? "more" : "meer"} ›
+                  </Link>
+                </li>
+              )}
             </ul>
           </div>
 
@@ -250,11 +261,11 @@ export default async function Footer({ locale = "nl" }) {
             <ul className="space-y-3">
               <li>
                 <a
-                  href="mailto:carpgatee@gmail.com"
+                  href="mailto:info@carpgate.com"
                   className="flex items-center gap-2 text-sm text-text-secondary hover:text-text-accent transition-colors"
                 >
                   <Mail size={14} />
-                  carpgatee@gmail.com
+                  info@carpgate.com
                 </a>
               </li>
               <li>
@@ -266,9 +277,22 @@ export default async function Footer({ locale = "nl" }) {
                   +31652368685
                 </a>
               </li>
-              <li className="flex items-center gap-2 text-sm text-text-secondary">
-                <MapPin size={14} className="shrink-0" />
-                Zwaardvegersgaarde 48, 2542 TE Den Haag, Nederland
+              <li>
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=Zwaardvegersgaarde+48+2542+TE+Den+Haag"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start gap-2 text-sm text-text-secondary hover:text-text-accent transition-colors"
+                >
+                  <MapPin size={14} className="shrink-0 mt-0.5" />
+                  Zwaardvegersgaarde 48, 2542 TE Den Haag, Nederland
+                </a>
+              </li>
+              <li className="text-xs text-text-secondary pt-1">
+                KVK: 51729660
+              </li>
+              <li className="text-xs text-text-secondary">
+                BTW: NL002462720B93
               </li>
             </ul>
           </div>

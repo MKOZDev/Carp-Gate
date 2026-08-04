@@ -33,7 +33,20 @@ body {
     transform: scale(1) translate(0, 0);
   }
 }
-
+/* Custom scrollbar */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(185, 191, 186, 0.2);
+  border-radius: 2px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(200, 165, 97, 0.5);
+}
 .animate-kenburns {
   animation: kenburns 12s ease-in-out infinite;
   will-change: transform;
