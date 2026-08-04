@@ -7,6 +7,7 @@ import {
   useCallback,
 } from "react";
 import { useLocale } from "next-intl";
+import { gtmAddToCart, gtmRemoveFromCart, gtmViewCart } from "@/lib/gtm";
 
 const CartContext = createContext(null);
 
@@ -16,6 +17,7 @@ export function CartProvider({ children }) {
   const locale = useLocale();
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
     try {
       const saved = localStorage.getItem("cg_cart");
@@ -31,6 +33,7 @@ export function CartProvider({ children }) {
   }, [cart, mounted]);
 
   const addToCart = useCallback((product, quantity = 1, variation = null) => {
+    gtmAddToCart(product, quantity, variation);
     setCart((prev) => {
       const key = variation
         ? `${product.id}-${variation.id}`
@@ -46,12 +49,21 @@ export function CartProvider({ children }) {
   }, []);
 
   const removeFromCart = useCallback((key) => {
-    setCart((prev) => prev.filter((i) => i.key !== key));
+    setCart((prev) => {
+      const item = prev.find((i) => i.key === key);
+      if (item) gtmRemoveFromCart(item.product, item.quantity, item.variation);
+      return prev.filter((i) => i.key !== key);
+    });
   }, []);
 
   const updateQuantity = useCallback((key, quantity) => {
     if (quantity < 1) {
-      setCart((prev) => prev.filter((i) => i.key !== key));
+      setCart((prev) => {
+        const item = prev.find((i) => i.key === key);
+        if (item)
+          gtmRemoveFromCart(item.product, item.quantity, item.variation);
+        return prev.filter((i) => i.key !== key);
+      });
       return;
     }
     setCart((prev) =>

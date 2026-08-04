@@ -5,6 +5,7 @@ import { useLocale } from "next-intl";
 import { useCart } from "@/context/CartContext";
 import Image from "next/image";
 import Link from "next/link";
+import { gtmViewCart } from "@/lib/gtm";
 
 export default function CartPage() {
   const t = useTranslations("cart");
@@ -33,6 +34,7 @@ export default function CartPage() {
   }, []);
 
   function handleCheckout() {
+    gtmViewCart(cart);
     setIsRedirecting(true);
     document.cookie = `next_locale=${locale}; path=/; SameSite=Lax`;
     const url = buildCheckoutUrl();

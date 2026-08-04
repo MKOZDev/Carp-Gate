@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import ProductGrid from "@/components/ProductElements/ProductGrid";
 import Pagination from "@/components/ui/Pagination";
+import { gtmViewItemList } from "@/lib/gtm";
 
 function FiltersContent({
   t,
@@ -183,7 +184,14 @@ export default function ShopClient({
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoading(false);
+  }, [products]);
+  useEffect(() => {
+    if (products?.length > 0) {
+      gtmViewItemList(products, category ? `Category ${category}` : "Shop");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [products]);
 
   function buildParams(overrides = {}) {

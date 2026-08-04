@@ -319,6 +319,18 @@ export default async function LocaleLayout({ children, params }) {
           </CartProvider>
         </NextIntlClientProvider>
         <GoogleAnalytics gaId="G-216004Y8LW" />
+        <Script id="ga4-linker" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('config', 'G-216004Y8LW', {
+              linker: {
+                domains: ['carpgate.com', 'cms.carpgate.com'],
+                accept_incoming: true
+              }
+            });
+          `}
+        </Script>
       </body>
     </html>
   );

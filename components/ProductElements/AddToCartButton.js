@@ -25,6 +25,7 @@ export default function AddToCartButton({ product }) {
 
   useEffect(() => {
     if (!hasVariations || !allSelected) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelectedVariation(null);
       return;
     }

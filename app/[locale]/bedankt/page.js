@@ -5,6 +5,7 @@ import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { CheckCircle, Package, MapPin, Mail, ArrowRight } from "lucide-react";
 import Wrapper from "@/components/layout/Wrapper";
+import GtmPurchase from "@/components/ProductElements/GtmPurchase";
 
 export async function generateMetadata({ params }) {
   const { locale } = await params;
@@ -25,6 +26,7 @@ export default async function ThankYouPage({ params, searchParams }) {
   if (!order) notFound();
 
   const items = order.line_items || [];
+  <GtmPurchase order={order} />;
   const shipping = order.shipping_lines?.[0]?.method_title || "";
   const address = order.shipping;
 

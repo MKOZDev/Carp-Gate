@@ -6,6 +6,7 @@ import { decodeHtml } from "@/lib/api";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
+import { gtmSelectItem } from "@/lib/gtm";
 
 export default function ProductCard({ product, locale }) {
   const image = product.images?.[0];
@@ -25,6 +26,7 @@ export default function ProductCard({ product, locale }) {
 
   function handleNavigate(e) {
     e.preventDefault();
+    gtmSelectItem(product, "Shop");
     setLoading(true);
     router.push(href);
   }
