@@ -6,14 +6,14 @@ const PARTNERS = [
   {
     name: "CT-Baitboats",
     href: "https://www.ct-baitboats.com/",
-    logo: "/ct-baitboats.jpg",
+    logo: "/ct-baitboatss.jpg",
     width: 200,
     height: 100,
   },
   {
     name: "bookingfish",
     href: "https://bookingfish.eu/",
-    logo: "/bookingfish.png",
+    logo: "/bookingfishh.png",
     width: 200,
     height: 100,
   },
