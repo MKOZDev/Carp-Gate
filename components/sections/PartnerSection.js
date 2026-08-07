@@ -27,7 +27,7 @@ export default function PartnersSection({ locale }) {
       : "Wij werken samen met de beste merken in karpervissen";
 
   return (
-    <section className="bg-bg-secondary py-24 max-sm:py-8 border-t border-text-secondary/10">
+    <section className="bg-bg-secondary py-24 max-sm:py-8 border-t border-text-secondary/20">
       <Wrapper>
         <div className="text-center mb-10">
           <h2 className="text-3xl md:text-4xl font-bold text-text-primary  leading-tight mb-6">
