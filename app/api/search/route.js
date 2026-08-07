@@ -10,6 +10,6 @@ export async function GET(request) {
     return NextResponse.json({ products: [] });
   }
 
-  const products = await searchProducts(q, locale, 8);
+  const products = await searchProducts(q, locale);
   return NextResponse.json({ products });
 }
