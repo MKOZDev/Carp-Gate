@@ -3,7 +3,7 @@ import nodemailer from "nodemailer";
 
 export async function POST(request) {
   try {
-    const { name, email, subject, message } = await request.json();
+    const { name, email, subject, message, type } = await request.json();
 
     if (!name || !email || !message) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
@@ -17,14 +17,20 @@ export async function POST(request) {
       },
     });
 
+    const isOrder = type === "order";
+    const label = isOrder ? "Bestelaanvraag" : "Contact";
+    const toAddress = isOrder
+      ? process.env.ORDER_EMAIL || process.env.CONTACT_EMAIL
+      : process.env.CONTACT_EMAIL;
+
     await transporter.sendMail({
-      from: `"Carp Gate Contact" <${process.env.SMTP_USER}>`,
-      to: process.env.CONTACT_EMAIL,
+      from: `"Carp Gate ${label}" <${process.env.SMTP_USER}>`,
+      to: toAddress,
       replyTo: email,
-      subject: `Contact: ${subject || "Nieuw bericht"} — ${name}`,
+      subject: `${label}: ${subject || "Nieuw bericht"} — ${name}`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px;">
-          <h2>Nieuw contactbericht</h2>
+          <h2>${isOrder ? "Nieuwe bestelaanvraag" : "Nieuw contactbericht"}</h2>
           <p><strong>Naam:</strong> ${name}</p>
           <p><strong>Email:</strong> ${email}</p>
           <p><strong>Onderwerp:</strong> ${subject || "-"}</p>

@@ -17,6 +17,7 @@ import CategorySection from "@/components/sections/CategorySection";
 import PromoSection from "@/components/ui/Promosection";
 import ImporterBanner from "@/components/sections/ImporterBanner";
 import SeoText from "@/components/sections/SeoText";
+import PartnersSection from "@/components/sections/PartnerSection";
 
 export async function generateMetadata({ params }) {
   const { locale } = await params;
@@ -76,6 +77,7 @@ export default async function HomePage({ params }) {
 
       <Newsletter locale={locale} />
       <ReviewsSection reviews={reviews} title={tR("title")} />
+      <PartnersSection locale={locale} />
       {locale === "nl" && <SeoText locale={locale} />}
     </>
   );

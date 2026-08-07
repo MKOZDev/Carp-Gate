@@ -1,6 +1,6 @@
 "use client";
 import { useEffect } from "react";
-import { pushEvent } from "@/lib/gtm";
+import { pushEvent, metaPurchase } from "@/lib/gtm";
 
 export default function GtmPurchase({ order }) {
   useEffect(() => {
@@ -26,6 +26,7 @@ export default function GtmPurchase({ order }) {
         items,
       },
     });
+    metaPurchase(order);
   }, [order]);
 
   return null;

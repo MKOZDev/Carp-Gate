@@ -3,6 +3,8 @@ import { getTranslations } from "next-intl/server";
 import { cleanDescription } from "@/lib/api";
 import { notFound } from "next/navigation";
 import AddToCartButton from "@/components/ProductElements/AddToCartButton";
+import ProductSpecs from "@/components/ProductElements/ProductSpecs";
+import ContactOrderForm from "@/components/ProductElements/ContactOrderForm";
 import ProductGrid from "@/components/ProductElements/ProductGrid";
 import ProductGallery from "@/components/ProductElements/ProductGallery";
 import ReviewForm from "@/components/ProductElements/ReviewForm";
@@ -10,6 +12,8 @@ import Link from "next/link";
 import GtmViewItem from "@/components/ProductElements/GtmViewItem";
 
 export const revalidate = 3600;
+
+const VOERBOTEN_SLUGS = ["voerbooten", "feed-boats"];
 
 export async function generateStaticParams() {
   const { products } = await getProducts({ per_page: 100 }, "nl");
@@ -52,6 +56,11 @@ export default async function ProductPage({ params }) {
   const regularPrice = parseFloat(product.regular_price || 0);
   const firstCategoryId = product.categories?.[0]?.id;
 
+  const isVoerboot = product.categories?.some((cat) =>
+    VOERBOTEN_SLUGS.includes(cat.slug),
+  );
+  const orderSubject = `${product.categories?.[0]?.name || ""} - ${product.name}`;
+
   // Related i reviews równolegle — nie czekamy sekwencyjnie
   const [{ products: relatedRaw }, reviews] = await Promise.all([
     firstCategoryId
@@ -79,7 +88,7 @@ export default async function ProductPage({ params }) {
 
   return (
     <>
-      <GtmViewItem product={product} />;
+      <GtmViewItem product={product} />
       <div className="bg-bg-primary min-h-screen">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
           {/* Breadcrumb */}
@@ -200,29 +209,14 @@ export default async function ProductPage({ params }) {
                 )}
               </div>
 
-              {/* {product.attributes?.filter((a) => !a.name.startsWith("BTW"))
-              .length > 0 && (
-              <div className="flex flex-col gap-1">
-                {product.attributes
-                  .filter((a) => !a.name.startsWith("BTW"))
-                  .slice(0, 4)
-                  .map((attr) => (
-                    <div
-                      key={attr.name}
-                      className="text-xs text-text-secondary"
-                    >
-                      <span className="text-text-secondary/60">
-                        {attr.name}:{" "}
-                      </span>
-                      <span className="text-text-primary">
-                        {attr.options?.join(", ")}
-                      </span>
-                    </div>
-                  ))}
-              </div>
-            )} */}
-
-              <AddToCartButton product={product} />
+              {isVoerboot ? (
+                <ProductSpecs
+                  attributes={product.attributes || []}
+                  locale={locale}
+                />
+              ) : (
+                <AddToCartButton product={product} />
+              )}
 
               <div className="flex items-center gap-2 text-sm">
                 <div
@@ -332,6 +326,12 @@ export default async function ProductPage({ params }) {
                   </div>
                 </div>
               </div>
+            </section>
+          )}
+
+          {isVoerboot && (
+            <section className="mt-10 pt-10 border-t border-text-secondary/10">
+              <ContactOrderForm subject={orderSubject} locale={locale} />
             </section>
           )}
 

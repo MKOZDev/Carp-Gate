@@ -240,10 +240,10 @@ export default function BestsellerCard({ product, locale }) {
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              <span className="max-lg:hidden">{t("added")}</span>
+              <span>{t("added")}</span>
             </>
           ) : outOfStock ? (
-            <span className="max-lg:hidden">{t("outOfStock")}</span>
+            <span>{t("outOfStock")}</span>
           ) : isVariable ? (
             <>
               <svg
@@ -259,7 +259,7 @@ export default function BestsellerCard({ product, locale }) {
                   d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
                 />
               </svg>
-              <span className="max-lg:hidden">{t("selectAll")}</span>
+              <span>{t("selectAll")}</span>
             </>
           ) : (
             <>
@@ -276,7 +276,7 @@ export default function BestsellerCard({ product, locale }) {
                   d="M12 4.5v15m7.5-7.5h-15"
                 />
               </svg>
-              <span className="max-lg:hidden">{t("addToCart")}</span>
+              <span>{t("addToCart")}</span>
             </>
           )}
         </button>

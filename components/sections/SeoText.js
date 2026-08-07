@@ -7,7 +7,7 @@ export default async function SeoText({ locale = "nl" }) {
   if (!seo?.length) return null;
 
   return (
-    <section className="bg-bg-secondary py-24 max-sm:py-12 border-b border-text-secondary/20">
+    <section className="bg-bg-primary py-24 max-sm:py-12">
       <Wrapper>
         {seo.map((item) => (
           <div

@@ -1,10 +1,10 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useLocale } from "next-intl";
 import { useCart } from "@/context/CartContext";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Search, X } from "lucide-react";
 import LanguageSwitcher from "../ui/LanguageSwitcher";
 
 export default function Navbar({
@@ -35,6 +35,126 @@ export default function Navbar({
     window.addEventListener("resize", handler);
     return () => window.removeEventListener("resize", handler);
   }, []);
+
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+
+  const desktopSearchRef = useRef(null);
+  const mobileSearchRef = useRef(null);
+  const desktopInputRef = useRef(null);
+  const mobileInputRef = useRef(null);
+
+  // Debounce zapytania
+  useEffect(() => {
+    if (searchQuery.trim().length < 2) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSearchResults([]);
+      setSearchLoading(false);
+      return;
+    }
+    setSearchLoading(true);
+    const timeout = setTimeout(async () => {
+      try {
+        const res = await fetch(
+          `/api/search?q=${encodeURIComponent(searchQuery)}&locale=${locale}`,
+        );
+        const data = await res.json();
+        setSearchResults(data.products || []);
+      } catch {
+        setSearchResults([]);
+      } finally {
+        setSearchLoading(false);
+      }
+    }, 350);
+    return () => clearTimeout(timeout);
+  }, [searchQuery, locale]);
+
+  // Zamknij po kliknięciu poza obszarem (desktop lub mobile)
+  useEffect(() => {
+    const handler = (e) => {
+      const inDesktop = desktopSearchRef.current?.contains(e.target);
+      const inMobile = mobileSearchRef.current?.contains(e.target);
+      if (!inDesktop && !inMobile) setSearchOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  // Autofocus po otwarciu — dopasowany do szerokości ekranu
+  useEffect(() => {
+    if (!searchOpen) return;
+    if (window.innerWidth < 640) {
+      mobileInputRef.current?.focus();
+    } else {
+      desktopInputRef.current?.focus();
+    }
+  }, [searchOpen]);
+
+  // Blokada scrolla tła gdy mobilny pasek wyszukiwania jest otwarty
+  useEffect(() => {
+    if (window.innerWidth < 640) {
+      document.body.style.overflow = searchOpen ? "hidden" : "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [searchOpen]);
+
+  function closeSearch() {
+    setSearchOpen(false);
+    setSearchQuery("");
+    setSearchResults([]);
+  }
+
+  function renderSearchResults() {
+    if (searchLoading) {
+      return (
+        <div className="py-6 text-center text-sm text-text-secondary">
+          {locale === "en" ? "Searching…" : "Zoeken…"}
+        </div>
+      );
+    }
+    if (searchResults.length === 0) {
+      return (
+        <div className="py-6 text-center text-sm text-text-secondary">
+          {locale === "en" ? "No products found" : "Geen producten gevonden"}
+        </div>
+      );
+    }
+    return searchResults.map((product) => (
+      <Link
+        key={product.id}
+        href={`${p}/product/${product.slug}`}
+        onClick={closeSearch}
+        className="flex items-center gap-3 p-2 rounded-xl hover:bg-bg-secondary transition-colors"
+      >
+        <div className="relative w-12 h-12 shrink-0 rounded-lg overflow-hidden bg-bg-secondary">
+          {product.image && (
+            <Image
+              src={product.image}
+              alt={product.name}
+              fill
+              sizes="48px"
+              className="object-cover"
+            />
+          )}
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-sm text-text-primary truncate">{product.name}</p>
+          <p className="text-xs text-text-accent font-medium">
+            €{product.price}
+            {product.on_sale && (
+              <span className="ml-2 text-text-secondary/50 line-through">
+                €{product.regular_price}
+              </span>
+            )}
+          </p>
+        </div>
+      </Link>
+    ));
+  }
 
   function cleanUrl(url) {
     if (!url) return "/";
@@ -145,6 +265,46 @@ export default function Navbar({
 
             {/* Prawa strona */}
             <div className="flex items-center gap-3">
+              {/* Wyszukiwarka — desktop: ikona + rozwijana pigułka pod nią */}
+              <div ref={desktopSearchRef} className="relative">
+                <button
+                  onClick={() => setSearchOpen((o) => !o)}
+                  className="p-2 text-text-secondary cursor-pointer hover:text-text-primary transition-colors"
+                  aria-label="Search"
+                >
+                  {searchOpen ? <X size={20} /> : <Search size={20} />}
+                </button>
+
+                {searchOpen && (
+                  <div className="hidden sm:block absolute top-full right-0 mt-3 w-80 z-50">
+                    <div className="flex items-center gap-2 bg-bg-secondary border border-text-secondary/20 rounded-full px-4 h-11">
+                      <Search
+                        size={16}
+                        className="text-text-secondary shrink-0"
+                      />
+                      <input
+                        ref={desktopInputRef}
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder={
+                          locale === "en"
+                            ? "Search products…"
+                            : "Zoek producten…"
+                        }
+                        className="bg-transparent flex-1 min-w-0 text-sm text-text-primary placeholder:text-text-secondary/50 outline-none"
+                      />
+                    </div>
+
+                    {searchQuery.trim().length >= 2 && (
+                      <div className="mt-2 max-h-96 overflow-y-auto bg-bg-secondary border border-text-secondary/10 rounded-2xl shadow-2xl shadow-black/40 p-2 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-text-secondary/30 [&::-webkit-scrollbar-thumb]:rounded-full">
+                        {renderSearchResults()}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
               <LanguageSwitcher />
 
               <Link
@@ -178,6 +338,41 @@ export default function Navbar({
           </div>
         </div>
       </header>
+
+      {/* Mobile: pełnoekranowy pasek wyszukiwania, wjeżdża z góry nad header */}
+      <div
+        ref={mobileSearchRef}
+        className={`sm:hidden fixed top-0 left-0 right-0 z-[60] bg-bg-primary border-b border-text-secondary/10 transition-transform duration-300 ${
+          searchOpen ? "translate-y-0" : "-translate-y-full"
+        }`}
+      >
+        <div className="flex items-center gap-2 px-4 h-16">
+          <Search size={18} className="text-text-secondary shrink-0" />
+          <input
+            ref={mobileInputRef}
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={
+              locale === "en" ? "Search products…" : "Zoek producten…"
+            }
+            className="bg-transparent flex-1 min-w-0 text-base text-text-primary placeholder:text-text-secondary/50 outline-none"
+          />
+          <button
+            onClick={closeSearch}
+            className="p-1 text-text-secondary hover:text-text-primary transition-colors shrink-0"
+            aria-label="Close search"
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        {searchQuery.trim().length >= 2 && (
+          <div className="max-h-[70vh] overflow-y-auto border-t border-text-secondary/10 px-2 py-2">
+            {renderSearchResults()}
+          </div>
+        )}
+      </div>
 
       {/* Mobile menu overlay */}
       <div

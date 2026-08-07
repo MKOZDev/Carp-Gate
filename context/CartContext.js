@@ -7,7 +7,12 @@ import {
   useCallback,
 } from "react";
 import { useLocale } from "next-intl";
-import { gtmAddToCart, gtmRemoveFromCart, gtmViewCart } from "@/lib/gtm";
+import {
+  gtmAddToCart,
+  gtmRemoveFromCart,
+  gtmViewCart,
+  metaAddToCart,
+} from "@/lib/gtm";
 
 const CartContext = createContext(null);
 
@@ -34,6 +39,7 @@ export function CartProvider({ children }) {
 
   const addToCart = useCallback((product, quantity = 1, variation = null) => {
     gtmAddToCart(product, quantity, variation);
+    metaAddToCart(product, quantity, variation);
     setCart((prev) => {
       const key = variation
         ? `${product.id}-${variation.id}`

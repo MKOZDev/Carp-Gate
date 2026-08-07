@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { gtmSelectItem } from "@/lib/gtm";
 
+const VOERBOTEN_SLUGS = ["voerbooten", "feed-boats"];
+
 export default function ProductCard({ product, locale }) {
   const image = product.images?.[0];
   const isOnSale = product.on_sale;
@@ -23,6 +25,9 @@ export default function ProductCard({ product, locale }) {
 
   const isVariable = product.type === "variable";
   const outOfStock = product.stock_status !== "instock";
+  const isVoerboot = product.categories?.some((cat) =>
+    VOERBOTEN_SLUGS.includes(cat.slug),
+  );
 
   function handleNavigate(e) {
     e.preventDefault();
@@ -152,73 +157,78 @@ export default function ProductCard({ product, locale }) {
           )}
         </button>
 
-        {/* Dodaj do koszyka */}
-        <button
-          onClick={handleQuickAdd}
-          className={`inline-flex items-center justify-center gap-2 h-[40px] text-sm cursor-pointer px-4 rounded border transition-all duration-150
-    ${
-      added
-        ? "border-green-500 text-green-400 bg-green-500/10"
-        : outOfStock
-          ? "border-text-secondary/20 text-text-secondary/40 cursor-not-allowed"
-          : "border-text-accent/40 text-text-accent hover:bg-text-accent hover:text-bg-primary"
-    }`}
-        >
-          {added ? (
-            <>
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-              <span className="max-xl:hidden">{t("added")}</span>
-            </>
-          ) : outOfStock ? (
-            <span className="max-xl:hidden">{t("outOfStock")}</span>
-          ) : isVariable ? (
-            <>
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
-                />
-              </svg>
-              <span className="max-xl:hidden">{t("selectAll")}</span>
-            </>
-          ) : (
-            <>
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 4.5v15m7.5-7.5h-15"
-                />
-              </svg>
-              <span className="max-xl:hidden">{t("addToCart")}</span>
-            </>
-          )}
-        </button>
+        {/* Dodaj do koszyka — ukryte dla voerbooten, tam obowiązuje formularz kontaktowy na stronie produktu */}
+        {!isVoerboot && (
+          <button
+            onClick={handleQuickAdd}
+            className={`inline-flex items-center justify-center gap-2 h-[40px] text-sm cursor-pointer px-4 rounded border transition-all duration-150
+      ${
+        added
+          ? "border-green-500 text-green-400 bg-green-500/10"
+          : outOfStock
+            ? "border-text-secondary/20 text-text-secondary/40 cursor-not-allowed"
+            : "border-text-accent/40 text-text-accent hover:bg-text-accent hover:text-bg-primary"
+      }`}
+          >
+            {added ? (
+              <>
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                <span className="max-xl:hidden">{t("added")}</span>
+              </>
+            ) : outOfStock ? (
+              <>
+                <span className="xl:hidden">✗</span>
+                <span className="max-xl:hidden">{t("outOfStock")}</span>
+              </>
+            ) : isVariable ? (
+              <>
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
+                  />
+                </svg>
+                <span className="max-xl:hidden">{t("selectAll")}</span>
+              </>
+            ) : (
+              <>
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 4.5v15m7.5-7.5h-15"
+                  />
+                </svg>
+                <span className="max-xl:hidden">{t("addToCart")}</span>
+              </>
+            )}
+          </button>
+        )}
       </div>
     </div>
   );

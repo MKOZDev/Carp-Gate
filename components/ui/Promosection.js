@@ -26,6 +26,7 @@ export default function PromoSection({ coupon, locale }) {
   const [copied, setCopied] = useState(false);
 
   if (!coupon) return null;
+  if (coupon.code?.toUpperCase() !== "CARPGATE10") return null;
 
   const expiryDate = new Date(coupon.date_expires);
   if (expiryDate < new Date()) return null;
