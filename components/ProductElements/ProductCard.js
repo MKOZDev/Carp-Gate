@@ -7,8 +7,7 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { gtmSelectItem } from "@/lib/gtm";
-
-const VOERBOTEN_SLUGS = ["voerbooten", "feed-boats"];
+import { isVoerbotenProduct } from "@/lib/constants";
 
 export default function ProductCard({ product, locale }) {
   const image = product.images?.[0];
@@ -25,9 +24,7 @@ export default function ProductCard({ product, locale }) {
 
   const isVariable = product.type === "variable";
   const outOfStock = product.stock_status !== "instock";
-  const isVoerboot = product.categories?.some((cat) =>
-    VOERBOTEN_SLUGS.includes(cat.slug),
-  );
+  const isVoerboot = isVoerbotenProduct(product.categories);
 
   function handleNavigate(e) {
     e.preventDefault();

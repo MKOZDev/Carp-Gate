@@ -10,10 +10,9 @@ import ProductGallery from "@/components/ProductElements/ProductGallery";
 import ReviewForm from "@/components/ProductElements/ReviewForm";
 import Link from "next/link";
 import GtmViewItem from "@/components/ProductElements/GtmViewItem";
+import { isVoerbotenProduct } from "@/lib/constants";
 
 export const revalidate = 3600;
-
-const VOERBOTEN_SLUGS = ["voerbooten", "feed-boats"];
 
 export async function generateStaticParams() {
   const { products } = await getProducts({ per_page: 100 }, "nl");
@@ -56,9 +55,7 @@ export default async function ProductPage({ params }) {
   const regularPrice = parseFloat(product.regular_price || 0);
   const firstCategoryId = product.categories?.[0]?.id;
 
-  const isVoerboot = product.categories?.some((cat) =>
-    VOERBOTEN_SLUGS.includes(cat.slug),
-  );
+  const isVoerboot = isVoerbotenProduct(product.categories);
   const orderSubject = `${product.categories?.[0]?.name || ""} - ${product.name}`;
 
   // Related i reviews równolegle — nie czekamy sekwencyjnie
@@ -331,7 +328,9 @@ export default async function ProductPage({ params }) {
 
           {isVoerboot && (
             <section className="mt-10 pt-10 border-t border-text-secondary/10">
-              <ContactOrderForm subject={orderSubject} locale={locale} />
+              <div className="max-w-xl">
+                <ContactOrderForm subject={orderSubject} locale={locale} />
+              </div>
             </section>
           )}
 
