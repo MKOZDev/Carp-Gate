@@ -69,7 +69,9 @@
     "sortNameAsc": "Naam A-Z",
     "sortNameDesc": "Naam Z-A",
     "sortPriceAsc": "Prijs laag-hoog",
-    "sortPriceDesc": "Prijs hoog-laag"
+    "sortPriceDesc": "Prijs hoog-laag",
+    "filterSubcategory": "Subcategorie",
+    "allSubcategories": "Alle subcategorieën"
   },
   "overons": {
     "cta": "Bekijk winkel"

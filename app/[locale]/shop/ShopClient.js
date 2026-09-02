@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
@@ -14,12 +14,15 @@ function FiltersContent({
   onSale,
   inStock,
   category,
+  subcategory,
   categories,
+  availableSubcategories,
   setMinPrice,
   setMaxPrice,
   setOnSale,
   setInStock,
   setCategory,
+  setSubcategory,
   applyFilters,
   resetFilters,
   sortBy,
@@ -74,7 +77,10 @@ function FiltersContent({
         </h3>
         <select
           value={category}
-          onChange={(e) => setCategory(e.target.value)}
+          onChange={(e) => {
+            setCategory(e.target.value);
+            setSubcategory("");
+          }}
           className="w-full border border-text-secondary/20 rounded-xl cursor-pointer px-3 py-2 text-sm bg-bg-secondary text-text-primary focus:outline-none focus:ring-2 focus:ring-text-accent"
         >
           <option value="">{t("allCategories")}</option>
@@ -85,6 +91,27 @@ function FiltersContent({
           ))}
         </select>
       </div>
+
+      {/* Podkategoria — widoczna dopiero po wyborze kategorii, tylko jej dzieci */}
+      {category && availableSubcategories.length > 0 && (
+        <div>
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-text-secondary mb-3">
+            {t("filterSubcategory")}
+          </h3>
+          <select
+            value={subcategory}
+            onChange={(e) => setSubcategory(e.target.value)}
+            className="w-full border border-text-secondary/20 rounded-xl cursor-pointer px-3 py-2 text-sm bg-bg-secondary text-text-primary focus:outline-none focus:ring-2 focus:ring-text-accent"
+          >
+            <option value="">{t("allSubcategories")}</option>
+            {availableSubcategories.map((sc) => (
+              <option key={sc.id} value={sc.id}>
+                {sc.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       <div>
         <h3 className="text-xs font-semibold uppercase tracking-wider text-text-secondary mb-3">
@@ -146,22 +173,6 @@ const ProductSkeleton = () => (
   </div>
 );
 
-// Mapowanie sortBy na parametry WooCommerce
-function getSortParams(sortBy) {
-  switch (sortBy) {
-    case "name_asc":
-      return { orderby: "title", order: "asc" };
-    case "name_desc":
-      return { orderby: "title", order: "desc" };
-    case "price_asc":
-      return { orderby: "price", order: "asc" };
-    case "price_desc":
-      return { orderby: "price", order: "desc" };
-    default:
-      return {};
-  }
-}
-
 export default function ShopClient({
   products,
   totalPages,
@@ -179,9 +190,42 @@ export default function ShopClient({
   const [onSale, setOnSale] = useState(initialFilters.on_sale === "true");
   const [inStock, setInStock] = useState(initialFilters.in_stock !== "false");
   const [category, setCategory] = useState(initialFilters.category || "");
+  const [subcategory, setSubcategory] = useState(
+    initialFilters.subcategory || "",
+  );
   const [sortBy, setSortBy] = useState(initialFilters.sort_by || "default");
   const [mobileFilters, setMobileFilters] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Tylko kategorie główne (parent 0/brak) trafiają do selecta "Kategoria"
+  const topCategories = useMemo(
+    () => categories.filter((c) => !c.parent || c.parent === 0),
+    [categories],
+  );
+
+  // Mapa: parent id (jako string) -> lista podkategorii
+  const subcategoriesMap = useMemo(() => {
+    const map = {};
+    categories.forEach((c) => {
+      if (c.parent) {
+        const key = String(c.parent);
+        if (!map[key]) map[key] = [];
+        map[key].push(c);
+      }
+    });
+    return map;
+  }, [categories]);
+
+  // Podkategorie zależne od wybranej kategorii głównej
+  const availableSubcategories = useMemo(
+    () =>
+      category
+        ? (subcategoriesMap[String(category)] || []).sort((a, b) =>
+            a.name.localeCompare(b.name),
+          )
+        : [],
+    [category, subcategoriesMap],
+  );
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -189,7 +233,14 @@ export default function ShopClient({
   }, [products]);
   useEffect(() => {
     if (products?.length > 0) {
-      gtmViewItemList(products, category ? `Category ${category}` : "Shop");
+      gtmViewItemList(
+        products,
+        subcategory
+          ? `Subcategory ${subcategory}`
+          : category
+            ? `Category ${category}`
+            : "Shop",
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [products]);
@@ -202,6 +253,7 @@ export default function ShopClient({
     if (inStock) params.set("in_stock", "true");
     else params.set("in_stock", "false"); // żeby można było odznaczyć
     if (category) params.set("category", category);
+    if (subcategory) params.set("subcategory", subcategory);
     if (sortBy !== "default") params.set("sort_by", sortBy);
     Object.entries(overrides).forEach(([k, v]) => {
       if (v) params.set(k, v);
@@ -223,6 +275,7 @@ export default function ShopClient({
     setOnSale(false);
     setInStock(true); // domyślnie true
     setCategory("");
+    setSubcategory("");
     setSortBy("default");
     setIsLoading(true);
     router.push(`${p}/shop?in_stock=true`);
@@ -242,12 +295,15 @@ export default function ShopClient({
     onSale,
     inStock,
     category,
-    categories,
+    subcategory,
+    categories: topCategories,
+    availableSubcategories,
     setMinPrice,
     setMaxPrice,
     setOnSale,
     setInStock,
     setCategory,
+    setSubcategory,
     applyFilters,
     resetFilters,
     sortBy,

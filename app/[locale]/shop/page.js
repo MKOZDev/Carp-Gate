@@ -1,4 +1,4 @@
-import { getProducts, getCategories } from "@/lib/api";
+import { getProducts, getShopCategories } from "@/lib/api";
 import { getTranslations } from "next-intl/server";
 import ShopClient from "./ShopClient";
 export const revalidate = 3600;
@@ -9,60 +9,60 @@ export async function generateMetadata({ params }) {
   return { title: t("title") };
 }
 
+function getSortParams(sortBy) {
+  switch (sortBy) {
+    case "name_asc":
+      return { orderby: "title", order: "asc" };
+    case "name_desc":
+      return { orderby: "title", order: "desc" };
+    case "price_asc":
+      return { orderby: "price", order: "asc" };
+    case "price_desc":
+      return { orderby: "price", order: "desc" };
+    default:
+      return {};
+  }
+}
+
+function resolveNlCategoryId(id, categories, locale) {
+  if (!id) return undefined;
+  const cat = categories.find((c) => String(c.id) === String(id));
+  if (!cat) return id;
+  return locale === "en" ? cat._nlId || cat.id : cat.id;
+}
+
 export default async function ShopPage({ params, searchParams }) {
   const { locale } = await params;
-  const { min_price, max_price, on_sale, in_stock, category, page } =
-    (await searchParams) || {};
+  const {
+    min_price,
+    max_price,
+    on_sale,
+    in_stock,
+    category,
+    subcategory,
+    sort_by,
+    page,
+  } = (await searchParams) || {};
 
   const currentPage = parseInt(page || "1");
-  const { sort_by } = (await searchParams) || {};
 
-  // Znajdź NL ID kategorii jeśli locale === "en"
-  let categoryId = category || undefined;
+  // Osobne pobranie kategorii + podkategorii, wyłącznie na potrzeby filtrów /shop
+  const categories = await getShopCategories(locale);
 
-  console.log("Final categoryId:", categoryId);
-  console.log(
-    "category param:",
-    category,
-    "categoryId after translation:",
-    categoryId,
-  );
-  function getSortParams(sortBy) {
-    switch (sortBy) {
-      case "name_asc":
-        return { orderby: "title", order: "asc" };
-      case "name_desc":
-        return { orderby: "title", order: "desc" };
-      case "price_asc":
-        return { orderby: "price", order: "asc" };
-      case "price_desc":
-        return { orderby: "price", order: "desc" };
-      default:
-        return {};
-    }
-  }
-  const [{ products, totalPages }, categories] = await Promise.all([
-    getProducts(
-      {
-        per_page: 12,
-        page: currentPage,
-        ...getSortParams(sort_by),
-        min_price: min_price || undefined,
-        max_price: max_price || undefined,
-        on_sale: on_sale === "true" ? true : undefined,
-        stock_status: in_stock === "false" ? undefined : "instock",
-        category: categoryId,
-      },
-      locale,
-    ),
-    getCategories(locale),
-  ]);
-  console.log(
-    "Products count:",
-    products.length,
-    "categoryId used:",
-    categoryId,
-    "locale:",
+  const selectedId = subcategory || category || undefined;
+  const wcCategoryId = resolveNlCategoryId(selectedId, categories, locale);
+
+  const { products, totalPages } = await getProducts(
+    {
+      per_page: 12,
+      page: currentPage,
+      ...getSortParams(sort_by),
+      min_price: min_price || undefined,
+      max_price: max_price || undefined,
+      on_sale: on_sale === "true" ? true : undefined,
+      stock_status: in_stock === "false" ? undefined : "instock",
+      category: wcCategoryId,
+    },
     locale,
   );
 
@@ -73,7 +73,15 @@ export default async function ShopPage({ params, searchParams }) {
       currentPage={currentPage}
       categories={categories}
       locale={locale}
-      initialFilters={{ min_price, max_price, on_sale, in_stock, category }}
+      initialFilters={{
+        min_price,
+        max_price,
+        on_sale,
+        in_stock,
+        category,
+        subcategory,
+        sort_by,
+      }}
     />
   );
 }

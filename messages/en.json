@@ -68,7 +68,9 @@
     "sortNameAsc": "Name A-Z",
     "sortNameDesc": "Name Z-A",
     "sortPriceAsc": "Price low-high",
-    "sortPriceDesc": "Price high-low"
+    "sortPriceDesc": "Price high-low",
+    "filterSubcategory": "Subcategory",
+    "allSubcategories": "All subcategories"
   },
   "overons": {
     "cta": "View shop"
