@@ -79,9 +79,9 @@ function VideoCard({ video, locale }) {
         )}
       </button>
 
-      <p className="absolute bottom-3 left-3 right-3 text-text-primary text-sm font-medium line-clamp-2">
+      {/* <p className="absolute bottom-3 left-3 right-3 text-text-primary text-sm font-medium line-clamp-2">
         {video.title}
-      </p>
+      </p> */}
 
       {video.product_link && isVisible && (
         <Link
