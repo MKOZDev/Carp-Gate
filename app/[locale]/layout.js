@@ -12,6 +12,7 @@ import Navbar from "@/components/layout/Navbar";
 import { getCategories, getMenu } from "@/lib/api";
 import ScrollToTop from "@/components/ui/ScrollToTop";
 import PageLoader from "@/components/ui/PageLoader";
+import FreeShippingBar from "@/components/sections/FreeShippingBar";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -333,6 +334,7 @@ export default async function LocaleLayout({ children, params }) {
         <NextIntlClientProvider locale={locale} messages={messages}>
           <CartProvider>
             <PageLoader />
+            <FreeShippingBar></FreeShippingBar>
             <Navbar
               initialCategories={categories}
               initialMenuItems={menuItems}

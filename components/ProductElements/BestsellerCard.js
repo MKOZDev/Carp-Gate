@@ -162,7 +162,7 @@ export default function BestsellerCard({ product, locale }) {
           href={href}
           className="flex hover:text-gray-500 transition-colors"
         >
-          <h3 className="font-medium text-md text-text-primary line-clamp-2">
+          <h3 className="font-medium text-md text-text-primary">
             {product.name}
           </h3>
         </Link>

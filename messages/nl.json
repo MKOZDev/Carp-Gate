@@ -15,7 +15,8 @@
     "subtitle": "Passie voor het karpervissen. Toewijding aan de hoogste kwaliteit uitrusting.",
     "text": "CarpGate is ontstaan uit liefde voor het karpervissen en is uitgegroeid tot dé online karperviswinkel van Nederland voor iedere fanatieke karpervisser. Wij geloven dat de juiste uitrusting essentieel is voor succes aan de waterkant. Onze missie is om vissers te voorzien van producten die betrouwbaarheid, functionaliteit en een modern design combineren. In ons assortiment vindt u zorgvuldig geselecteerde producten van gerenommeerde merken, evenals eigen ontwerpen die speciaal zijn ontwikkeld voor de behoeften van de moderne karpervisser. Elk product wordt gekozen en ontworpen om vissers te ondersteunen in elke fase van hun passie – van korte sessies tot meerdaagse vistrips. Wij geloven dat vissen meer is dan een hobby. Het is een levensstijl, gebaseerd op geduld, respect voor de natuur en het voortdurende streven naar perfectie. Daarom is CarpGate niet alleen een winkel, maar ook een gemeenschap van mensen die dezelfde passie delen.",
     "tagline": "CarpGate – Koninklijk van nature. Gedreven door passie. 🎣👑",
-    "cta": "Lees meer"
+    "cta": "Lees meer",
+    "ctaVideo": "Bekijk video's"
   },
   "home": {
     "catalog": "Productcatalogus",
@@ -108,5 +109,9 @@
     "success": "Bedankt! Uw beoordeling wordt beoordeeld.",
     "error": "Er is iets misgegaan. Probeer het opnieuw.",
     "noReviews": "Nog geen beoordelingen. Wees de eerste!"
+  },
+  "shipping": {
+    "freeShippingBanner": "Gratis verzending vanaf €150",
+    "close": "Sluiten"
   }
 }

@@ -316,16 +316,25 @@ export default async function Footer({ locale = "nl" }) {
             </div>
 
             <div className="flex flex-col items-center sm:items-end gap-2">
-              <p className="text-xs text-text-secondary uppercase tracking-widest">
+              <p className="text-xs text-text-secondary uppercase tracking-widest mb-2">
                 {locale === "en" ? "Delivered by" : "Bezorgd door"}
               </p>
-              <Image
-                src="/dpd.png"
-                alt="DPD"
-                width={80}
-                height={40}
-                className="object-contain"
-              />
+              <div className="flex">
+                <Image
+                  src="/dpd.png"
+                  alt="DPD"
+                  width={80}
+                  height={40}
+                  className="object-contain"
+                />
+                <Image
+                  src="/postnl.jpg"
+                  alt="DPD"
+                  width={50}
+                  height={40}
+                  className="object-contain"
+                />
+              </div>
             </div>
           </div>
 

@@ -17,6 +17,13 @@ const PARTNERS = [
     width: 200,
     height: 100,
   },
+  {
+    name: "aqua",
+    href: "https://www.aller-aqua.com/",
+    logo: "/aqua.jpg",
+    width: 200,
+    height: 100,
+  },
 ];
 
 export default function PartnersSection({ locale }) {
@@ -27,7 +34,7 @@ export default function PartnersSection({ locale }) {
       : "Wij werken samen met de beste merken in karpervissen";
 
   return (
-    <section className="bg-bg-secondary py-24 max-sm:py-8 border-t border-text-secondary/20">
+    <section className="bg-bg-secondary py-24 max-sm:py-8 ">
       <Wrapper>
         <div className="text-center mb-10">
           <h2 className="text-3xl md:text-4xl font-bold text-text-primary  leading-tight mb-6">
@@ -50,7 +57,9 @@ export default function PartnersSection({ locale }) {
                 alt={partner.name}
                 width={partner.width}
                 height={partner.height}
-                className="object-contain"
+                className={`object-contain ${
+                  partner.name === "aqua" ? "rounded-full" : ""
+                } max-sm:max-w-[100px]`}
               />
             </Link>
           ))}

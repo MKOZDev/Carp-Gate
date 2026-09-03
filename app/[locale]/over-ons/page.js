@@ -1,4 +1,4 @@
-import { getPage } from "@/lib/api";
+import { getPage, getProductVideos } from "@/lib/api";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import AboutHero from "@/components/sections/OverOns/AboutHero";
@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import PrimaryBtn from "@/components/ui/PrimaryBtn";
 import { getTranslations } from "next-intl/server";
+import ProductVideosSection from "@/components/sections/ProductVideosSection";
 
 const SLUGS = {
   nl: "over-ons",
@@ -79,6 +80,7 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function AboutPage({ params }) {
+  const videos = await getProductVideos();
   const { locale } = await params;
   const t = await getTranslations("overons");
   const p = locale === "en" ? "/en" : "";
@@ -177,7 +179,7 @@ export default async function AboutPage({ params }) {
           </div>
         </Wrapper>
       </div>
-
+      <ProductVideosSection videos={videos} locale={locale} />
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image

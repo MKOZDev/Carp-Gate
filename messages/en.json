@@ -14,7 +14,9 @@
     "title": "Our Story",
     "subtitle": "A passion for carp fishing. A commitment to the highest quality equipment.",
     "text": "CarpGate was born out of a love for carp fishing and has grown into a leading online carp fishing store in the Netherlands for passionate carp anglers. We believe that the right equipment is essential for success on the water. Our mission is to provide anglers with products that combine reliability, functionality, and modern design. Our range features carefully selected products from renowned brands, as well as our own designs developed specifically to meet the needs of the modern carp angler. Each product is chosen and designed to support anglers at every stage of their passion — from short sessions to multi-day fishing trips. We believe that fishing is more than just a hobby. It is a lifestyle, based on patience, respect for nature, and the constant pursuit of perfection. That is why CarpGate is not just a store, but also a community of people who share the same passion. 🎣👑",
-    "cta": "Read more"
+    "tagline": "CarpGate – Royal by nature. Driven by passion. 🎣👑",
+    "cta": "Read more",
+    "ctaVideo": "Watch videos"
   },
   "home": {
     "catalog": "Product catalog",
@@ -107,5 +109,9 @@
     "success": "Thank you! Your review is pending approval.",
     "error": "Something went wrong. Please try again.",
     "noReviews": "No reviews yet. Be the first!"
+  },
+  "shipping": {
+    "freeShippingBanner": "Free shipping on orders over €150",
+    "close": "Close"
   }
 }

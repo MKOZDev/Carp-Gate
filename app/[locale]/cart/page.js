@@ -53,7 +53,7 @@ export default function CartPage() {
 
   if (!mounted) {
     return (
-      <div className="bg-bg-primary min-h-screen flex items-center justify-center">
+      <div className="bg-bg-primary min-h-100 flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-text-secondary/20 border-t-text-accent rounded-full animate-spin" />
       </div>
     );
@@ -61,7 +61,7 @@ export default function CartPage() {
 
   if (isRedirecting) {
     return (
-      <div className="bg-bg-primary min-h-screen flex flex-col items-center justify-center gap-4">
+      <div className="bg-bg-primary min-h-100 flex flex-col items-center justify-center gap-4">
         <div className="w-10 h-10 border-2 border-text-secondary/20 border-t-text-accent rounded-full animate-spin" />
         <p className="text-text-secondary text-sm">{t("redirecting")}</p>
       </div>
@@ -70,7 +70,7 @@ export default function CartPage() {
 
   if (count === 0) {
     return (
-      <div className="bg-bg-primary min-h-screen flex flex-col items-center justify-center px-4">
+      <div className="bg-bg-primary min-h-100 flex flex-col items-center justify-center px-4">
         <svg
           className="w-16 h-16 text-text-secondary/30 mb-6"
           fill="none"
@@ -96,7 +96,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="bg-bg-primary min-h-screen relative">
+    <div className="bg-bg-primary min-h-100 relative">
       {isRedirecting && (
         <div className="fixed inset-0 bg-bg-primary/80 backdrop-blur-sm z-50 flex flex-col items-center justify-center gap-4">
           <div className="w-10 h-10 border-2 border-text-secondary/20 border-t-text-accent rounded-full animate-spin" />

@@ -168,7 +168,7 @@ export default function Navbar({
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        className={`fixed top-[36px] left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
             ? "bg-bg-primary/95 backdrop-blur-md shadow-lg shadow-black/20"
             : "bg-bg-primary"
@@ -269,7 +269,11 @@ export default function Navbar({
               <div ref={desktopSearchRef} className="relative">
                 <button
                   onClick={() => setSearchOpen((o) => !o)}
-                  className="p-2 text-text-secondary cursor-pointer hover:text-text-primary transition-colors"
+                  className={`p-2 cursor-pointer transition-colors border rounded-full ${
+                    searchOpen
+                      ? "border-text-accent/60 bg-text-accent/10 text-text-primary"
+                      : "border-text-accent/30 text-text-secondary hover:text-text-primary hover:border-text-accent/60"
+                  }`}
                   aria-label="Search"
                 >
                   {searchOpen ? <X size={20} /> : <Search size={20} />}
@@ -277,7 +281,7 @@ export default function Navbar({
 
                 {searchOpen && (
                   <div className="hidden sm:block absolute top-full right-0 mt-3 w-80 z-50">
-                    <div className="flex items-center gap-2 bg-bg-secondary border border-text-secondary/20 rounded-full px-4 h-11">
+                    <div className="flex items-center gap-2 bg-bg-secondary border border-text-accent/20 rounded-full px-4 h-11">
                       <Search
                         size={16}
                         className="text-text-secondary shrink-0"
@@ -342,7 +346,7 @@ export default function Navbar({
       {/* Mobile: pełnoekranowy pasek wyszukiwania, wjeżdża z góry nad header */}
       <div
         ref={mobileSearchRef}
-        className={`sm:hidden fixed top-0 left-0 right-0 z-[60] bg-bg-primary border-b border-text-secondary/10 transition-transform duration-300 ${
+        className={`sm:hidden fixed top-0 left-0 right-0 z-[60] bg-bg-primary border-b border-text-accent/20 transition-transform duration-300 ${
           searchOpen ? "translate-y-0" : "-translate-y-full"
         }`}
       >
@@ -376,7 +380,7 @@ export default function Navbar({
 
       {/* Mobile menu overlay */}
       <div
-        className={`fixed inset-0 z-40 lg:hidden transition-all duration-300 ${mobileOpen ? "visible" : "invisible"}`}
+        className={`fixed inset-0 top-[36px] z-40 lg:hidden transition-all duration-300 ${mobileOpen ? "visible" : "invisible"}`}
       >
         <div
           className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${mobileOpen ? "opacity-100" : "opacity-0"}`}
@@ -491,7 +495,7 @@ export default function Navbar({
         </div>
       </div>
 
-      <div className="h-16 lg:h-20" />
+      <div className="h-25" />
     </>
   );
 }

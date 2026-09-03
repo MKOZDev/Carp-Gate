@@ -25,7 +25,12 @@ export default async function AboutUs({ locale }) {
               <br />
               <strong>{t("tagline")}</strong>
             </p>
-            <PrimaryBtn href={`${p}/${slug}`}>{t("cta")}</PrimaryBtn>
+            <div className="flex gap-4 flex-wrap">
+              <PrimaryBtn href={`${p}/${slug}`}>{t("cta")}</PrimaryBtn>
+              <PrimaryBtn href={`${p}/${slug}#video`}>
+                {t("ctaVideo")}
+              </PrimaryBtn>
+            </div>
           </div>
         </div>
       </Wrapper>

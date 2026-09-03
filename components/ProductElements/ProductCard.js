@@ -79,7 +79,7 @@ export default function ProductCard({ product, locale }) {
 
       <div className="flex flex-col flex-1 gap-3 p-4">
         {product.categories?.length > 0 && (
-          <div className="flex gap-1 flex-wrap grow">
+          <div className="flex gap-1 flex-wrap">
             {product.categories.map((cat) => (
               <Link
                 key={cat.id}
@@ -96,7 +96,7 @@ export default function ProductCard({ product, locale }) {
           href={href}
           className="flex hover:text-gray-500 transition-colors grow"
         >
-          <h3 className="font-medium text-md text-text-primary line-clamp-2">
+          <h3 className="font-medium text-md text-text-primary">
             {product.name}
           </h3>
         </Link>
