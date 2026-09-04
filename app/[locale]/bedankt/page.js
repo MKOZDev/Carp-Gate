@@ -26,12 +26,12 @@ export default async function ThankYouPage({ params, searchParams }) {
   if (!order) notFound();
 
   const items = order.line_items || [];
-  <GtmPurchase order={order} />;
   const shipping = order.shipping_lines?.[0]?.method_title || "";
   const address = order.shipping;
 
   return (
     <div className="bg-bg-primary py-16 max-sm:py-8">
+      <GtmPurchase order={order} />
       <Wrapper>
         {/* Header */}
         <div className="text-center mb-16 max-sm:mb-8">

@@ -6,6 +6,10 @@ export default function GtmPurchase({ order }) {
   useEffect(() => {
     if (!order) return;
 
+    const key = `purchase_fired_${order.id}`;
+    if (localStorage.getItem(key)) return; // już wysłane wcześniej
+    localStorage.setItem(key, "1");
+
     const items =
       order.line_items?.map((item) => ({
         item_id: String(item.product_id),
