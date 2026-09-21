@@ -62,31 +62,6 @@ export default function CategoryGrid({ categories, locale, p }) {
           </p>
         </Link>
       ))}
-
-      {/* Kafelek — wszystkie kategorie */}
-      <Link
-        href={`${p}/shop`}
-        className="group relative h-48 rounded-sm flex flex-col items-center justify-center border border-white/10 hover:border-[#c8a561]/50 hover:bg-white/5 transition-all duration-300 gap-3"
-      >
-        <div className="w-12 h-12 rounded-full border border-white/20 group-hover:border-[#c8a561] flex items-center justify-center transition-all duration-300">
-          <svg
-            className="w-5 h-5 text-white/40 group-hover:text-[#c8a561] transition-all duration-300"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={1.5}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M8.25 4.5l7.5 7.5-7.5 7.5"
-            />
-          </svg>
-        </div>
-        <p className="text-sm font-medium text-white/40 group-hover:text-[#c8a561] transition-colors duration-300 tracking-wide text-center px-2">
-          {shopLabel}
-        </p>
-      </Link>
     </div>
   );
 }

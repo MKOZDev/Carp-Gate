@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
@@ -83,7 +83,6 @@ function FiltersContent({
           }}
           className="w-full border border-text-secondary/20 rounded-xl cursor-pointer px-3 py-2 text-sm bg-bg-secondary text-text-primary focus:outline-none focus:ring-2 focus:ring-text-accent"
         >
-          <option value="">{t("allCategories")}</option>
           {categories.map((c) => (
             <option key={c.id} value={c.id}>
               {c.name}
@@ -176,14 +175,23 @@ const ProductSkeleton = () => (
 export default function ShopClient({
   products,
   totalPages,
+  totalCount,
   currentPage,
   categories,
   locale,
+  currentSlug,
   initialFilters,
+  title,
+  breadcrumb,
+  description,
 }) {
   const router = useRouter();
   const t = useTranslations("shop");
   const p = locale === "en" ? "/en" : "";
+  const basePath = `${p}/category/${currentSlug}`;
+
+  // Loading trwa dokładnie do zakończenia nawigacji (też gdy URL się nie zmienia)
+  const [isLoading, startTransition] = useTransition();
 
   const [minPrice, setMinPrice] = useState(initialFilters.min_price || "");
   const [maxPrice, setMaxPrice] = useState(initialFilters.max_price || "");
@@ -195,7 +203,6 @@ export default function ShopClient({
   );
   const [sortBy, setSortBy] = useState(initialFilters.sort_by || "default");
   const [mobileFilters, setMobileFilters] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   // Tylko kategorie główne (parent 0/brak) trafiają do selecta "Kategoria"
   const topCategories = useMemo(
@@ -220,17 +227,13 @@ export default function ShopClient({
   const availableSubcategories = useMemo(
     () =>
       category
-        ? (subcategoriesMap[String(category)] || []).sort((a, b) =>
+        ? [...(subcategoriesMap[String(category)] || [])].sort((a, b) =>
             a.name.localeCompare(b.name),
           )
         : [],
     [category, subcategoriesMap],
   );
 
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setIsLoading(false);
-  }, [products]);
   useEffect(() => {
     if (products?.length > 0) {
       gtmViewItemList(
@@ -245,15 +248,13 @@ export default function ShopClient({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [products]);
 
+  // Kategoria i podkategoria są w ścieżce URL, więc tu tylko reszta filtrów
   function buildParams(overrides = {}) {
     const params = new URLSearchParams();
     if (minPrice) params.set("min_price", minPrice);
     if (maxPrice) params.set("max_price", maxPrice);
     if (onSale) params.set("on_sale", "true");
-    if (inStock) params.set("in_stock", "true");
-    else params.set("in_stock", "false"); // żeby można było odznaczyć
-    if (category) params.set("category", category);
-    if (subcategory) params.set("subcategory", subcategory);
+    if (!inStock) params.set("in_stock", "false"); // domyślnie true
     if (sortBy !== "default") params.set("sort_by", sortBy);
     Object.entries(overrides).forEach(([k, v]) => {
       if (v) params.set(k, v);
@@ -262,30 +263,40 @@ export default function ShopClient({
     return params.toString();
   }
 
+  // Przechodzi na stronę wybranej kategorii/podkategorii z resztą filtrów w query
+  function navigate(overrides = {}) {
+    const selected = categories.find(
+      (c) => String(c.id) === String(subcategory || category),
+    );
+    const slug = selected?.slug ?? currentSlug;
+    const q = buildParams(overrides);
+    startTransition(() => {
+      router.push(`${p}/category/${slug}${q ? `?${q}` : ""}`);
+    });
+  }
+
   function applyFilters() {
-    const q = buildParams();
-    setIsLoading(true);
-    router.push(`${p}/shop${q ? `?${q}` : ""}`);
+    navigate();
     setMobileFilters(false);
   }
 
+  // Reset wraca do kategorii aktualnej strony
   function resetFilters() {
     setMinPrice("");
     setMaxPrice("");
     setOnSale(false);
-    setInStock(true); // domyślnie true
-    setCategory("");
-    setSubcategory("");
+    setInStock(true);
+    setCategory(initialFilters.category || "");
+    setSubcategory(initialFilters.subcategory || "");
     setSortBy("default");
-    setIsLoading(true);
-    router.push(`${p}/shop?in_stock=true`);
+    startTransition(() => {
+      router.push(basePath);
+    });
   }
 
   function handleSortChange(value) {
     setSortBy(value);
-    const q = buildParams({ sort_by: value !== "default" ? value : "" });
-    setIsLoading(true);
-    router.push(`${p}/shop${q ? `?${q}` : ""}`);
+    navigate({ sort_by: value !== "default" ? value : "" });
   }
 
   const filterProps = {
@@ -310,11 +321,15 @@ export default function ShopClient({
     setSortBy,
   };
 
+  const foundCount = totalCount ?? products.length;
+
   return (
     <section className="bg-bg-primary">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-text-primary">{t("title")}</h1>
+        {breadcrumb}
+
+        <div className="flex items-center justify-between mb-8 gap-2">
+          <h1 className="text-3xl font-bold text-text-primary">{title}</h1>
           <button
             onClick={() => setMobileFilters(true)}
             className="lg:hidden flex items-center gap-2 border border-text-secondary/30 rounded-full px-4 py-2 text-sm text-text-primary"
@@ -335,6 +350,8 @@ export default function ShopClient({
             {t("filterTitle")}
           </button>
         </div>
+
+        {description && <div className="-mt-4 mb-8">{description}</div>}
 
         <AnimatePresence>
           {mobileFilters && (
@@ -402,7 +419,7 @@ export default function ShopClient({
                 {isLoading ? (
                   <span className="opacity-0">...</span>
                 ) : (
-                  t("found", { count: products.length })
+                  t("found", { count: foundCount })
                 )}
               </p>
 
@@ -428,7 +445,7 @@ export default function ShopClient({
             {/* Mobile — liczba produktów */}
             {!isLoading && (
               <p className="lg:hidden text-sm text-text-secondary mb-6">
-                {t("found", { count: products.length })}
+                {t("found", { count: foundCount })}
               </p>
             )}
 
@@ -441,7 +458,7 @@ export default function ShopClient({
                   <Pagination
                     currentPage={currentPage}
                     totalPages={totalPages}
-                    basePath={`${p}/shop`}
+                    basePath={basePath}
                     extraParams={buildParams()}
                   />
                 )}

@@ -85,15 +85,13 @@ function NavigationBar() {
 
   if (!visible) return null;
 
+  const width = Math.min(100, Math.max(0, progress));
+
   return (
-    <div className="fixed top-0 left-0 right-0 z-[9998] h-0.5 pointer-events-none">
+    <div className="fixed top-0 left-0 right-0 z-[9998] h-0.5 pointer-events-none bg-bg-primary/20">
       <div
-        className="h-full bg-text-accent transition-all duration-200 ease-out"
-        style={{ width: `${progress}%` }}
-      />
-      <div
-        className="absolute top-0 h-full w-16 bg-text-accent/50 blur-sm transition-all duration-200"
-        style={{ left: `calc(${progress}% - 64px)` }}
+        className="h-full bg-bg-primary transition-[width] duration-200 ease-out"
+        style={{ width: `${width}%` }}
       />
     </div>
   );
@@ -105,6 +103,7 @@ function SplashScreen() {
 
   useEffect(() => {
     if (sessionStorage.getItem("loaderDone")) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setVisible(false);
       return;
     }

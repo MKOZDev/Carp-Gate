@@ -68,7 +68,7 @@ export default async function HomePage({ params }) {
       )}
       <PromoSection coupon={coupon} locale={locale} />
 
-      <section className="bg-bg-main py-24 max-sm:py-8">
+      <section id="categories" className="bg-bg-main py-24 max-sm:py-8">
         <Wrapper>
           <HeadingBox accent={t("categoriesAccent")} title={t("categories")} />
           <CategorySection categories={categories} locale={locale} p={p} />

@@ -9,7 +9,7 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import "../globals.css";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
-import { getCategories, getMenu } from "@/lib/api";
+import { getShopCategories, getMenu } from "@/lib/api";
 import ScrollToTop from "@/components/ui/ScrollToTop";
 import PageLoader from "@/components/ui/PageLoader";
 import FreeShippingBar from "@/components/sections/FreeShippingBar";
@@ -156,7 +156,7 @@ export default async function LocaleLayout({ children, params }) {
   // 3 fetche zamiast 4 — menu tylko dla aktualnego locale
   const [messages, categories, menuItems] = await Promise.all([
     getMessages({ locale }),
-    getCategories(locale),
+    await getShopCategories(locale),
     getMenu(locale, menuName),
   ]);
 

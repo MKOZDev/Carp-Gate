@@ -205,32 +205,23 @@ export default async function Footer({ locale = "nl" }) {
           </div>
 
           {/* Kolumna 2 — Winkel */}
-          <div>
+          <div className="flex flex-col self-stretch">
             <h3 className="text-xs font-semibold uppercase tracking-widest text-text-secondary mb-5">
               {locale === "en" ? "Shop" : "Winkel"}
             </h3>
-            <ul className="space-y-3">
-              {categories.slice(0, 9).map((cat) => (
-                <li key={cat.id}>
-                  <Link
-                    href={`${p}/category/${cat.slug}`}
-                    className="text-sm text-text-secondary hover:text-text-accent transition-colors"
-                  >
-                    {cat.name}
-                  </Link>
-                </li>
-              ))}
-              {categories.length > 9 && (
-                <li>
-                  <Link
-                    href={`${p}/shop`}
-                    className="text-sm text-text-accent hover:text-white transition-colors"
-                  >
-                    + {categories.length - 9}{" "}
-                    {locale === "en" ? "more" : "meer"} ›
-                  </Link>
-                </li>
-              )}
+            <ul className="space-y-3 overflow-y-auto pr-2 max-h-64 lg:max-h-none lg:h-0 lg:grow [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-text-secondary/30 [&::-webkit-scrollbar-thumb]:rounded-full">
+              {categories
+                .filter((cat) => !cat.parent || cat.parent === 0)
+                .map((cat) => (
+                  <li key={cat.id}>
+                    <Link
+                      href={`${p}/category/${cat.slug}`}
+                      className="text-sm text-text-secondary hover:text-text-accent transition-colors"
+                    >
+                      {cat.name}
+                    </Link>
+                  </li>
+                ))}
             </ul>
           </div>
 

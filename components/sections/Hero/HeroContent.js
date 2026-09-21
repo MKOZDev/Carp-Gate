@@ -28,7 +28,7 @@ export default function HeroContent({ title, subtitle, cta, href }) {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6, delay: 0.8, ease: "easeOut" }}
       >
-        <PrimaryBtn href={href}>
+        <PrimaryBtn href={`#categories`}>
           {cta}
           <svg
             width="14"

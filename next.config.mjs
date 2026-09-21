@@ -3,6 +3,12 @@ import createNextIntlPlugin from "next-intl/plugin";
 const withNextIntl = createNextIntlPlugin("./i18n/request.js");
 
 const nextConfig = {
+  async redirects() {
+    return [
+      { source: "/shop", destination: "/", permanent: true },
+      { source: "/en/shop", destination: "/en", permanent: true },
+    ];
+  },
   async rewrites() {
     return [
       { source: "/en/about-us", destination: "/en/over-ons" },
