@@ -7,8 +7,8 @@
   },
   "hero": {
     "title": "CarpGate – De enige shop in nederland met smaken die de karper nog niet kent",
-    "subtitle": "Exclusieve boilies in dip, alleen hier verkrijgbaar.",
-    "cta": "Bekijk ons assortiment"
+    "subtitle": "Exclusieve boilies, dip en liquids, alleen hier verkrijgbaar.",
+    "cta": "Shop nu exclusieve boilies "
   },
   "aboutus": {
     "title": "Ons verhaal",
@@ -37,7 +37,10 @@
     "outOfStock": "✗ Niet beschikbaar",
     "quantity": "Aantal",
     "selectAll": "Selecteer alle opties",
-    "description": "Beschrijving"
+    "description": "Beschrijving",
+    "stockLeft": "Nog {count} op voorraad",
+    "allInCart": "Alles al in winkelwagen",
+    "insufficientStock": "Onvoldoende voorraad"
   },
   "cart": {
     "title": "Winkelwagen",
@@ -111,7 +114,7 @@
     "noReviews": "Nog geen beoordelingen. Wees de eerste!"
   },
   "shipping": {
-    "freeShippingBanner": "Gratis verzending vanaf €150",
+    "freeShippingBanner": "Gratis verzending vanaf €75",
     "close": "Sluiten"
   }
 }

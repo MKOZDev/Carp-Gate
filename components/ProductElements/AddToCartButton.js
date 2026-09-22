@@ -7,9 +7,15 @@ function cleanOption(option) {
   return option.replace(/^"|"$/g, "").trim();
 }
 
+// Ilość danego klucza (produkt albo produkt-wariant) już obecna w koszyku.
+function tracksStockKeyLookup(cart, key) {
+  const item = cart?.find((i) => i.key === key);
+  return item ? item.quantity : 0;
+}
+
 export default function AddToCartButton({ product }) {
   const t = useTranslations("product");
-  const { addToCart } = useCart();
+  const { cart, addToCart } = useCart();
   const [selectedAttributes, setSelectedAttributes] = useState({});
   const [selectedVariation, setSelectedVariation] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -45,16 +51,69 @@ export default function AddToCartButton({ product }) {
     setSelectedVariation(matched || null);
   }, [selectedAttributes, variations, hasVariations, allSelected]);
 
+  // Aktualny "byt", którego stan magazynowy obowiązuje: wariant (jeśli produkt
+  // ma warianty i jest wybrany) albo sam produkt.
+  const activeEntity = hasVariations ? selectedVariation : product;
+
+  // manage_stock === true i stock_quantity !== null/undefined -> mamy dokładną
+  // liczbę sztuk na magazynie i musimy jej pilnować. W przeciwnym razie
+  // (np. manage_stock wyłączony) polegamy tylko na stock_status.
+  const tracksStock =
+    !!activeEntity?.manage_stock &&
+    activeEntity?.stock_quantity !== null &&
+    activeEntity?.stock_quantity !== undefined;
+
+  // Ile sztuk tego dokładnie produktu/wariantu klient ma już w koszyku - ten sam
+  // klucz, którego używa CartContext (product.id albo product.id-variation.id).
+  const cartKey = selectedVariation
+    ? `${product.id}-${selectedVariation.id}`
+    : String(product.id);
+  const inCartQuantity = tracksStockKeyLookup(cart, cartKey);
+
+  const rawAvailableStock = tracksStock ? activeEntity.stock_quantity : null;
+  // To, co faktycznie zostało do dodania: stan magazynowy pomniejszony o to,
+  // co klient już ma w koszyku - inaczej licznik "+" pozwoliłby przekroczyć
+  // realny stan (np. stan=5, w koszyku już 0, ale gdyby doliczyć bez tego,
+  // dało się dobić do 6 mimo że dostępnych jest tylko 5).
+  const availableStock = tracksStock
+    ? Math.max(0, rawAvailableStock - inCartQuantity)
+    : null;
+
+  // Resetuj/przycinaj ilość, gdy zmienia się dostępny stan (np. po wyborze wariantu,
+  // albo gdy w innej karcie klient dorzucił ten sam produkt do koszyka).
+  useEffect(() => {
+    if (tracksStock && quantity > availableStock) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setQuantity(availableStock > 0 ? availableStock : 1);
+    }
+  }, [tracksStock, availableStock]); // eslint-disable-line react-hooks/exhaustive-deps
+
   function handleAdd() {
     if (hasVariations && !selectedVariation) return;
+    if (tracksStock && (availableStock <= 0 || quantity > availableStock))
+      return;
     addToCart(product, quantity, selectedVariation);
     setAdded(true);
     setTimeout(() => setAdded(false), 2500);
   }
 
-  const outOfStock = product.stock_status !== "instock";
+  const outOfStock =
+    activeEntity?.stock_status !== "instock" ||
+    (tracksStock && rawAvailableStock <= 0);
+
+  // Cały stan już leży w koszyku (np. stan=5, w koszyku już 5) - nie stan=0,
+  // ale nie ma już nic do dodania.
+  const noneLeftToAdd = tracksStock && !outOfStock && availableStock <= 0;
+
+  const exceedsStock = tracksStock && quantity > availableStock;
+
   const canAdd =
-    !outOfStock && (!hasVariations || (allSelected && selectedVariation));
+    !outOfStock &&
+    !noneLeftToAdd &&
+    !exceedsStock &&
+    (!hasVariations || (allSelected && selectedVariation));
+
+  const canIncrease = !tracksStock || quantity < availableStock;
 
   return (
     <div className="space-y-5">
@@ -131,12 +190,29 @@ export default function AddToCartButton({ product }) {
             {quantity}
           </span>
           <button
-            onClick={() => setQuantity((q) => q + 1)}
-            className="w-9 h-9 rounded-full border border-text-secondary/30 cursor-pointer text-text-secondary hover:border-text-accent hover:text-text-accent flex items-center justify-center transition-colors"
+            onClick={() =>
+              setQuantity((q) =>
+                tracksStock ? Math.min(availableStock, q + 1) : q + 1,
+              )
+            }
+            disabled={!canIncrease}
+            className={`w-9 h-9 rounded-full border flex items-center justify-center transition-colors ${
+              canIncrease
+                ? "border-text-secondary/30 cursor-pointer text-text-secondary hover:border-text-accent hover:text-text-accent"
+                : "border-text-secondary/10 text-text-secondary/30 cursor-not-allowed"
+            }`}
           >
             +
           </button>
         </div>
+        {/* Informacja o pozostałej dostępnej liczbie sztuk (uwzględnia to, co już w koszyku) */}
+        {tracksStock && !outOfStock && (
+          <span className="text-xs text-text-secondary/70">
+            {availableStock > 0
+              ? t("stockLeft", { count: availableStock })
+              : t("allInCart")}
+          </span>
+        )}
       </div>
 
       {/* Przycisk dodaj do koszyka */}
@@ -155,9 +231,13 @@ export default function AddToCartButton({ product }) {
           ? t("outOfStock")
           : hasVariations && !allSelected
             ? t("selectAll")
-            : added
-              ? t("added")
-              : t("addToCart")}
+            : noneLeftToAdd
+              ? t("allInCart")
+              : exceedsStock
+                ? t("insufficientStock")
+                : added
+                  ? t("added")
+                  : t("addToCart")}
       </button>
     </div>
   );
