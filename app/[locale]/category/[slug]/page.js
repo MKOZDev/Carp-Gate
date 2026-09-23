@@ -24,7 +24,12 @@ export async function generateMetadata({ params }) {
   const { slug, locale } = await params;
   const category = await getCategoryBySlug(slug, locale);
   if (!category) return { title: "Niet gevonden" };
-  return { title: category.name };
+  return {
+    title: category.meta_title || category.name,
+    description:
+      category.meta_description ||
+      category.description?.replace(/<[^>]+>/g, "").slice(0, 160),
+  };
 }
 
 export default async function CategoryPage({ params, searchParams }) {

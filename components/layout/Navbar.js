@@ -20,17 +20,20 @@ export default function Navbar({
   const categories = initialCategories;
   const menuItems = initialMenuItems;
 
-  // Kategorie główne (parent 0/brak)
+  // Kategorie główne (parent 0/brak) — tylko te widoczne w menu
   const topCategories = useMemo(
-    () => categories.filter((c) => !c.parent || c.parent === 0),
+    () =>
+      categories.filter(
+        (c) => (!c.parent || c.parent === 0) && c.show_in_menu !== false,
+      ),
     [categories],
   );
 
-  // Mapa: id kategorii głównej (string) -> posortowane podkategorie
+  // Mapa: id kategorii głównej (string) -> posortowane podkategorie — tylko widoczne
   const subcategoriesMap = useMemo(() => {
     const map = {};
     categories.forEach((c) => {
-      if (c.parent) {
+      if (c.parent && c.show_in_menu !== false) {
         const key = String(c.parent);
         if (!map[key]) map[key] = [];
         map[key].push(c);

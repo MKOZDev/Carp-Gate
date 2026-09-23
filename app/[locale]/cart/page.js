@@ -19,6 +19,7 @@ export default function CartPage() {
     buildCheckoutUrl,
     clearCart,
     mounted,
+    getMaxStock,
   } = useCart();
   const p = locale === "en" ? "/en" : "";
   const [isRedirecting, setIsRedirecting] = useState(false);
@@ -111,6 +112,8 @@ export default function CartPage() {
 
         <div className="space-y-3 mb-10">
           {cart.map((item) => {
+            const maxStock = getMaxStock(item);
+            const atMax = maxStock != null && item.quantity >= maxStock;
             const image = item.product.images?.[0];
             const price = parseFloat(
               item.variation?.price || item.product.price || 0,
@@ -196,7 +199,8 @@ export default function CartPage() {
                       onClick={() =>
                         updateQuantity(item.key, item.quantity + 1)
                       }
-                      className="w-8 h-8 rounded-full border border-text-secondary/30 cursor-pointer text-text-secondary hover:border-text-accent hover:text-text-accent flex items-center justify-center text-sm transition-colors"
+                      disabled={atMax}
+                      className="w-8 h-8 rounded-full border border-text-secondary/30 cursor-pointer text-text-secondary hover:border-text-accent hover:text-text-accent flex items-center justify-center text-sm transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:border-text-secondary/30 disabled:hover:text-text-secondary"
                     >
                       +
                     </button>

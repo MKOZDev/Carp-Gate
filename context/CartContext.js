@@ -16,6 +16,17 @@ import {
 
 const CartContext = createContext(null);
 
+// Maksymalna dostępna ilość dla pozycji koszyka — z wariantu jeśli istnieje,
+// inaczej z produktu głównego. null = brak limitu (manage_stock wyłączony
+// albo stock_quantity nieustawione w WooCommerce).
+function getMaxStock(item) {
+  const source = item.variation || item.product;
+  if (!source) return null;
+  if (source.manage_stock === false) return null;
+  if (source.stock_quantity == null) return null;
+  return source.stock_quantity;
+}
+
 export function CartProvider({ children }) {
   const [cart, setCart] = useState([]);
   const [mounted, setMounted] = useState(false);
@@ -46,8 +57,16 @@ export function CartProvider({ children }) {
         : String(product.id);
       const existing = prev.find((i) => i.key === key);
       if (existing) {
+        const maxStock = getMaxStock(existing);
+        const nextQty = existing.quantity + quantity;
         return prev.map((i) =>
-          i.key === key ? { ...i, quantity: i.quantity + quantity } : i,
+          i.key === key
+            ? {
+                ...i,
+                quantity:
+                  maxStock != null ? Math.min(nextQty, maxStock) : nextQty,
+              }
+            : i,
         );
       }
       return [...prev, { key, product, variation, quantity }];
@@ -73,7 +92,13 @@ export function CartProvider({ children }) {
       return;
     }
     setCart((prev) =>
-      prev.map((i) => (i.key === key ? { ...i, quantity } : i)),
+      prev.map((i) => {
+        if (i.key !== key) return i;
+        const maxStock = getMaxStock(i);
+        const capped =
+          maxStock != null ? Math.min(quantity, maxStock) : quantity;
+        return { ...i, quantity: capped };
+      }),
     );
   }, []);
 
@@ -121,6 +146,7 @@ export function CartProvider({ children }) {
         total,
         count,
         buildCheckoutUrl,
+        getMaxStock,
       }}
     >
       {children}

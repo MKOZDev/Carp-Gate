@@ -204,17 +204,20 @@ export default function ShopClient({
   const [sortBy, setSortBy] = useState(initialFilters.sort_by || "default");
   const [mobileFilters, setMobileFilters] = useState(false);
 
-  // Tylko kategorie główne (parent 0/brak) trafiają do selecta "Kategoria"
+  // Tylko kategorie główne (parent 0/brak) I widoczne w menu/filtrach
   const topCategories = useMemo(
-    () => categories.filter((c) => !c.parent || c.parent === 0),
+    () =>
+      categories.filter(
+        (c) => (!c.parent || c.parent === 0) && c.show_in_menu !== false,
+      ),
     [categories],
   );
 
-  // Mapa: parent id (jako string) -> lista podkategorii
+  // Mapa: parent id (jako string) -> lista widocznych podkategorii
   const subcategoriesMap = useMemo(() => {
     const map = {};
     categories.forEach((c) => {
-      if (c.parent) {
+      if (c.parent && c.show_in_menu !== false) {
         const key = String(c.parent);
         if (!map[key]) map[key] = [];
         map[key].push(c);
