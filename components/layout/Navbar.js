@@ -222,6 +222,7 @@ export default function Navbar({
                 alt="Carp Gate"
                 width={60}
                 height={60}
+                priority
                 className="object-contain"
               />
             </Link>

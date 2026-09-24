@@ -184,6 +184,7 @@ export default function ShopClient({
   title,
   breadcrumb,
   description,
+  seoContent,
 }) {
   const router = useRouter();
   const t = useTranslations("shop");
@@ -403,7 +404,6 @@ export default function ShopClient({
             </>
           )}
         </AnimatePresence>
-
         <div className="flex flex-col lg:flex-row gap-10">
           <aside className="hidden lg:block w-60 shrink-0">
             <div className="sticky top-30">
@@ -469,6 +469,8 @@ export default function ShopClient({
             )}
           </div>
         </div>
+
+        {!isLoading && seoContent}
       </div>
     </section>
   );

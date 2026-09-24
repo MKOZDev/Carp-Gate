@@ -103,11 +103,23 @@ export default async function CategoryPage({ params, searchParams }) {
     </nav>
   );
 
-  const descriptionNode = category.description ? (
-    <div
-      className="text-text-secondary prose prose-sm max-w-none"
-      dangerouslySetInnerHTML={{ __html: category.description }}
-    />
+  const descriptionNode = category.short_intro ? (
+    <p className="text-text-secondary mb-8">{category.short_intro}</p>
+  ) : null;
+
+  const seoContentNode = category.seo_content ? (
+    <section className="mt-16 pt-10 border-t border-text-secondary/10">
+      <div
+        className="text-text-secondary prose prose-sm max-w-none
+    prose-headings:font-[family-name:var(--font-manrope)]
+    prose-headings:text-text-primary
+    prose-h2:text-2xl prose-h2:font-bold prose-h2:mt-10 prose-h2:mb-4
+    prose-h3:text-lg prose-h3:font-semibold prose-h3:mt-6 prose-h3:mb-2
+    prose-a:text-text-accent prose-a:no-underline hover:prose-a:underline
+    prose-strong:text-text-primary"
+        dangerouslySetInnerHTML={{ __html: category.seo_content }}
+      />
+    </section>
   ) : null;
 
   return (
@@ -132,6 +144,7 @@ export default async function CategoryPage({ params, searchParams }) {
       title={category.name}
       breadcrumb={breadcrumb}
       description={descriptionNode}
+      seoContent={seoContentNode}
     />
   );
 }

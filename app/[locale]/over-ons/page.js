@@ -100,8 +100,10 @@ export default async function AboutPage({ params }) {
               src={acf.hero_image.url}
               alt={acf.hero_image.alt || ""}
               fill
+              sizes="100vw"
               className="object-cover opacity-60"
               priority
+              fetchPriority="high"
             />
             <div
               className="absolute inset-0"

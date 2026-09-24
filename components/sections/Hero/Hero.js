@@ -12,12 +12,13 @@ export default async function Hero({ locale }) {
     <HeroSection>
       <div className="absolute inset-0 z-0">
         <Image
-          className="w-full h-full object-cover"
           src="/hero-img3.png"
           alt="Hero"
-          width={1024}
-          height={1024}
+          fill
           priority
+          fetchPriority="high"
+          sizes="100vw"
+          className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#0F2A20]/95 via-[#0F2A20]/80 to-transparent"></div>
         <div className="absolute inset-0 bg-gradient-to-t from-[#0F2A20] via-transparent to-transparent"></div>
