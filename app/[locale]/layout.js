@@ -30,6 +30,8 @@ const locales = ["nl", "en"];
 
 const BASE_URL = "https://carpgate.com";
 
+const GTM_IDS = ["GTM-TX7RHPZM", "GTM-K566VTNS"];
+
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
@@ -90,6 +92,9 @@ export async function generateMetadata({ params }) {
         "max-image-preview": "large",
         "max-snippet": -1,
       },
+    },
+    verification: {
+      google: "Qfn5U_1aGMdl-tYEO28pvv4DeyM7ZMVWcwFg8ewixsw",
     },
 
     openGraph: {
@@ -156,24 +161,27 @@ export default async function LocaleLayout({ children, params }) {
   // 3 fetche zamiast 4 — menu tylko dla aktualnego locale
   const [messages, categories, menuItems] = await Promise.all([
     getMessages({ locale }),
-    await getShopCategories(locale),
+    getShopCategories(locale),
     getMenu(locale, menuName),
   ]);
 
   return (
     <html lang={locale} className={`${inter.variable} ${manrope.variable}`}>
       <head>
-        <Script
-          id="gtm-script"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        {GTM_IDS.map((id) => (
+          <Script
+            key={id}
+            id={`gtm-${id}`}
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-TX7RHPZM');`,
-          }}
-        />
+    })(window,document,'script','dataLayer','${id}');`,
+            }}
+          />
+        ))}
         <Script id="meta-pixel" strategy="afterInteractive">
           {`
     !function(f,b,e,v,n,t,s)
@@ -312,14 +320,16 @@ export default async function LocaleLayout({ children, params }) {
         />
       </head>
       <body className="min-h-screen flex flex-col bg-bg-primary text-text-primary antialiased font-[family-name:var(--font-manrope)]">
-        <noscript>
-          <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-TX7RHPZM"
-            height="0"
-            width="0"
-            style={{ display: "none", visibility: "hidden" }}
-          />
-        </noscript>
+        {GTM_IDS.map((id) => (
+          <noscript key={id}>
+            <iframe
+              src={`https://www.googletagmanager.com/ns.html?id=${id}`}
+              height="0"
+              width="0"
+              style={{ display: "none", visibility: "hidden" }}
+            />
+          </noscript>
+        ))}
         <noscript>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
