@@ -8,7 +8,11 @@ import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { isVoerbotenProduct } from "@/lib/constants";
 
-export default function BestsellerCard({ product, locale }) {
+export default function BestsellerCard({
+  product,
+  locale,
+  imageSizes = "(max-width: 640px) 80vw, (max-width: 1024px) 40vw, 300px",
+}) {
   const images = product.images || [];
   const [current, setCurrent] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -84,13 +88,28 @@ export default function BestsellerCard({ product, locale }) {
           onClick={(e) => isDragging.current && e.preventDefault()}
         >
           {images.length > 0 ? (
-            <Image
-              src={images[current]?.src}
-              alt={images[current]?.alt || product.name}
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-500 pointer-events-none"
-              draggable={false}
-            />
+            <>
+              <Image
+                src={images[current]?.src}
+                alt={images[current]?.alt || product.name}
+                fill
+                sizes={imageSizes}
+                className="object-cover group-hover:scale-105 transition-transform duration-500 pointer-events-none"
+                draggable={false}
+              />
+
+              {images.length > 1 && (
+                <Image
+                  src={images[(current + 1) % images.length].src}
+                  alt=""
+                  fill
+                  sizes={imageSizes}
+                  className="opacity-0 pointer-events-none"
+                  draggable={false}
+                  aria-hidden
+                />
+              )}
+            </>
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-bg-secondary">
               <svg

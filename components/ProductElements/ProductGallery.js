@@ -22,7 +22,7 @@ export default function ProductGallery({
             fill
             className="object-cover transition-opacity duration-300"
             sizes="(max-width: 768px) 100vw, 50vw"
-            priority
+            preload
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-text-secondary/20">
@@ -63,6 +63,8 @@ export default function ProductGallery({
             <button
               key={i}
               onClick={() => setActiveIndex(i)}
+              aria-label={`${productName} – zdjęcie ${i + 1}`}
+              aria-current={activeIndex === i}
               className={`relative w-20 h-20 shrink-0 rounded-xl cursor-pointer overflow-hidden bg-bg-secondary border-2 transition-all duration-200 ${
                 activeIndex === i
                   ? "border-text-accent "
@@ -71,7 +73,7 @@ export default function ProductGallery({
             >
               <Image
                 src={img.src}
-                alt={img.alt || `${productName} ${i + 1}`}
+                alt=""
                 fill
                 className="object-cover"
                 sizes="80px"

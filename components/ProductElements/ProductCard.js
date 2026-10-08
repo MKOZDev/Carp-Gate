@@ -9,7 +9,12 @@ import { useCart } from "@/context/CartContext";
 import { gtmSelectItem } from "@/lib/gtm";
 import { isVoerbotenProduct } from "@/lib/constants";
 
-export default function ProductCard({ product, locale }) {
+export default function ProductCard({
+  product,
+  locale,
+  imageSizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 320px",
+  preloadImage = false,
+}) {
   const image = product.images?.[0];
   const isOnSale = product.on_sale;
   const price = parseFloat(product.price || 0);
@@ -56,6 +61,8 @@ export default function ProductCard({ product, locale }) {
             src={image.src}
             alt={image.alt || product.name}
             fill
+            sizes={imageSizes}
+            preload={preloadImage}
             className="object-cover group-hover:scale-105 transition-transform duration-500"
           />
         ) : (

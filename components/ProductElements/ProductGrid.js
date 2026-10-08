@@ -14,12 +14,12 @@ export default function ProductGrid({
   }
   return (
     <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 lg:gap-6 md:ga">
-      {products.map((product) => (
+      {products.map((product, i) => (
         <ProductCard
           key={product.id}
           product={product}
           locale={locale}
-          mainCatIds={mainCatIds}
+          preloadImage={i < 4}
         />
       ))}
     </div>
