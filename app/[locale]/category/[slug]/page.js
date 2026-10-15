@@ -9,6 +9,9 @@ import Link from "next/link";
 
 import { getSortParams, resolveNlCategoryId } from "@/lib/shop-filters";
 import ShopClient from "@/components/sections/ShopElements/ShopClient";
+import { buildMetadata, pickDescription, DEFAULT_DESC } from "@/lib/seo";
+import JsonLd from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd } from "@/lib/jsonld";
 
 export const revalidate = 3600;
 
@@ -24,12 +27,18 @@ export async function generateMetadata({ params }) {
   const { slug, locale } = await params;
   const category = await getCategoryBySlug(slug, locale);
   if (!category) return { title: "Niet gevonden" };
-  return {
+
+  return buildMetadata({
+    locale,
+    path: `/category/${category.slug}`,
     title: category.meta_title || category.name,
-    description:
-      category.meta_description ||
-      category.description?.replace(/<[^>]+>/g, "").slice(0, 160),
-  };
+    description: pickDescription(
+      category.meta_description,
+      category.short_intro,
+      category.description,
+      DEFAULT_DESC[locale],
+    ),
+  });
 }
 
 export default async function CategoryPage({ params, searchParams }) {
@@ -78,9 +87,18 @@ export default async function CategoryPage({ params, searchParams }) {
     },
     locale,
   );
-
+  const crumbs = [
+    { name: "Home", path: "" },
+    ...(parent
+      ? [{ name: parent.name, path: `/category/${parent.slug}` }]
+      : []),
+    { name: category.name, path: `/category/${slug}` },
+  ];
   const breadcrumb = (
-    <nav className="text-sm text-text-secondary mb-8 flex items-center gap-2">
+    <nav
+      key="breadcrumb"
+      className="text-sm text-text-secondary mb-8 flex items-center gap-2"
+    >
       <Link
         href={`${p}/`}
         className="hover:text-text-primary transition-colors max-sm:text-xs"
@@ -104,11 +122,16 @@ export default async function CategoryPage({ params, searchParams }) {
   );
 
   const descriptionNode = category.short_intro ? (
-    <p className="text-text-secondary mb-8">{category.short_intro}</p>
+    <p key="short-intro" className="text-text-secondary mb-8">
+      {category.short_intro}
+    </p>
   ) : null;
 
   const seoContentNode = category.seo_content ? (
-    <section className="mt-16 pt-10 border-t border-text-secondary/10">
+    <section
+      key="seo-content"
+      className="mt-16 pt-10 border-t border-text-secondary/10"
+    >
       <div
         className="prose prose-invert max-w-none
     [&_p]:text-text-secondary [&_p]:leading-relaxed [&_p]:mb-4
@@ -125,28 +148,31 @@ export default async function CategoryPage({ params, searchParams }) {
   ) : null;
 
   return (
-    <ShopClient
-      key={`${locale}-${slug}`}
-      products={products}
-      totalPages={totalPages}
-      totalCount={totalCount}
-      currentPage={currentPage}
-      categories={shopCategories}
-      locale={locale}
-      currentSlug={slug}
-      initialFilters={{
-        min_price,
-        max_price,
-        on_sale,
-        in_stock,
-        sort_by,
-        category: presetCategory,
-        subcategory: presetSubcategory,
-      }}
-      title={category.name}
-      breadcrumb={breadcrumb}
-      description={descriptionNode}
-      seoContent={seoContentNode}
-    />
+    <>
+      <JsonLd data={breadcrumbJsonLd(crumbs, locale)} />
+      <ShopClient
+        key={`${locale}-${slug}`}
+        products={products}
+        totalPages={totalPages}
+        totalCount={totalCount}
+        currentPage={currentPage}
+        categories={shopCategories}
+        locale={locale}
+        currentSlug={slug}
+        initialFilters={{
+          min_price,
+          max_price,
+          on_sale,
+          in_stock,
+          sort_by,
+          category: presetCategory,
+          subcategory: presetSubcategory,
+        }}
+        title={category.name}
+        breadcrumb={breadcrumb}
+        description={descriptionNode}
+        seoContent={seoContentNode}
+      />
+    </>
   );
 }

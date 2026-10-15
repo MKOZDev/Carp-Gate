@@ -11,6 +11,9 @@ import ReviewForm from "@/components/ProductElements/ReviewForm";
 import Link from "next/link";
 import GtmViewItem from "@/components/ProductElements/GtmViewItem";
 import { isVoerbotenProduct } from "@/lib/constants";
+import { buildMetadata, pickDescription, DEFAULT_DESC } from "@/lib/seo";
+import JsonLd from "@/components/seo/JsonLd";
+import { productJsonLd, breadcrumbJsonLd } from "@/lib/jsonld";
 
 export const revalidate = 3600;
 
@@ -26,15 +29,18 @@ export async function generateMetadata({ params }) {
   const { slug, locale } = await params;
   const product = await getProductBySlug(slug, locale);
   if (!product) return { title: "Niet gevonden" };
-  return {
-    title: product.name,
-    description: product.short_description
-      ?.replace(/<[^>]+>/g, "")
-      .slice(0, 160),
-    openGraph: {
-      images: product.images?.[0] ? [{ url: product.images[0].src }] : [],
-    },
-  };
+  return buildMetadata({
+    locale,
+    path: `/product/${product.slug}`,
+    title: product.meta_title || product.name,
+    description: pickDescription(
+      product.meta_description,
+      product.short_description,
+      product.description,
+      DEFAULT_DESC[locale],
+    ),
+    image: product.images?.[0]?.src,
+  });
 }
 
 export default async function ProductPage({ params }) {
@@ -82,9 +88,34 @@ export default async function ProductPage({ params }) {
     reviews.length > 0
       ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
       : 0;
+  const cat = product.categories?.[0]; // pierwsza widoczna kategoria
+  const crumbs = [
+    { name: "Home", path: "" },
+    ...(cat ? [{ name: cat.name, path: `/category/${cat.slug}` }] : []),
+    { name: product.name, path: `/product/${product.slug}` },
+  ];
+
+  // Warianty: bierzemy tylko obiekty (WooCommerce domyślnie zwraca same ID)
+  const variations = Array.isArray(product.variations)
+    ? product.variations.filter((v) => v && typeof v === "object")
+    : [];
+
+  const productLd = productJsonLd(product, locale, variations);
+  // Oceny z faktycznie wyświetlanych recenzji (spójne z treścią strony)
+  if (reviews.length > 0) {
+    productLd.aggregateRating = {
+      "@type": "AggregateRating",
+      ratingValue: avgRating.toFixed(1),
+      reviewCount: reviews.length,
+    };
+  } else {
+    delete productLd.aggregateRating;
+  }
 
   return (
     <>
+      <JsonLd data={productLd} />
+      <JsonLd data={breadcrumbJsonLd(crumbs, locale)} />
       <GtmViewItem product={product} />
       <div className="bg-bg-primary min-h-screen">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">

@@ -9,6 +9,7 @@ import "../globals.css";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
 import { getShopCategories, getMenu } from "@/lib/api";
+import { BASE_URL } from "@/lib/seo";
 import ScrollToTop from "@/components/ui/ScrollToTop";
 import PageLoader from "@/components/ui/PageLoader";
 import FreeShippingBar from "@/components/sections/FreeShippingBar";
@@ -27,13 +28,9 @@ const manrope = Manrope({
 
 const locales = ["nl", "en"];
 
-const BASE_URL = "https://carpgate.com";
-
-
 const GTM_IDS = ["GTM-TX7RHPZM", "GTM-K566VTNS"];
 const GA_ID = "G-216004Y8LW";
 const META_PIXEL_ID = "1313339790871186";
-
 
 const CLIENT_NAMESPACES = [
   "product",
@@ -55,6 +52,8 @@ export async function generateMetadata({ params }) {
   const { locale } = await params;
   const isEn = locale === "en";
 
+  // Uwaga: celowo brak `alternates` (canonical/hreflang) i `openGraph.url` —
+  // każda podstrona ustawia własne przez buildMetadata() z lib/seo.js.
   return {
     metadataBase: new URL(BASE_URL),
 
@@ -116,9 +115,6 @@ export async function generateMetadata({ params }) {
       type: "website",
       locale: isEn ? "en_GB" : "nl_NL",
       alternateLocale: isEn ? "nl_NL" : "en_GB",
-
-      url: isEn ? `${BASE_URL}/en` : BASE_URL,
-
       siteName: "CarpGate",
 
       title: isEn
@@ -152,14 +148,6 @@ export async function generateMetadata({ params }) {
       images: [`${BASE_URL}/og-image.jpg`],
     },
 
-    alternates: {
-      canonical: isEn ? `${BASE_URL}/en` : BASE_URL,
-      languages: {
-        nl: BASE_URL,
-        en: `${BASE_URL}/en`,
-      },
-    },
-
     icons: {
       icon: "/logo.png",
       apple: "/logo.png",
@@ -178,7 +166,6 @@ export default async function LocaleLayout({ children, params }) {
     getShopCategories(locale),
     getMenu(locale, menuName),
   ]);
-
 
   const clientMessages = Object.fromEntries(
     CLIENT_NAMESPACES.filter((ns) => messages[ns]).map((ns) => [
@@ -203,9 +190,8 @@ export default async function LocaleLayout({ children, params }) {
 
   return (
     <html lang={locale} className={`${inter.variable} ${manrope.variable}`}>
-      <head>
-     
-        <Script id="tracking-init" strategy="beforeInteractive">
+      <body className="min-h-screen flex flex-col bg-bg-primary text-text-primary antialiased font-[family-name:var(--font-manrope)]">
+        <Script id="tracking-init" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
@@ -228,129 +214,6 @@ export default async function LocaleLayout({ children, params }) {
           `}
         </Script>
 
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "OnlineStore",
-              name: "CarpGate",
-              alternateName: "CarpGate Karperviswinkel",
-
-              url: "https://carpgate.com",
-
-              logo: {
-                "@type": "ImageObject",
-                url: "https://carpgate.com/logo.png",
-              },
-              description:
-                "CarpGate is dé online karperviswinkel van Nederland. Ontdek boilies, pop-ups, wafters, pellets, karperhengels, molens en professionele karperuitrusting voor iedere karpervisser.",
-
-              email: "carpgatee@gmail.com",
-              telephone: "+31652368685",
-
-              address: {
-                "@type": "PostalAddress",
-                streetAddress: "Zwaardvegersgaarde 48",
-                postalCode: "2542 TE",
-                addressLocality: "Den Haag",
-                addressCountry: "NL",
-              },
-              priceRange: "€€",
-              currenciesAccepted: "EUR",
-              paymentAccepted: "iDEAL, Credit Card, PayPal, Klarna",
-              areaServed: [
-                {
-                  "@type": "Country",
-                  name: "Netherlands",
-                },
-                {
-                  "@type": "Country",
-                  name: "Belgium",
-                },
-              ],
-              knowsAbout: [
-                "Karpervissen",
-                "Karperuitrusting",
-                "Boilies",
-                "Pop-ups",
-                "Wafters",
-                "Pellets",
-                "Karperhengels",
-                "Karpermolens",
-                "Tandem Baits",
-              ],
-              brand: {
-                "@type": "Brand",
-                name: "CarpGate",
-              },
-              sameAs: [
-                "https://www.instagram.com/carpgate",
-                "https://www.facebook.com/carpgate",
-              ],
-              hasOfferCatalog: {
-                "@type": "OfferCatalog",
-                name: "CarpGate categorieën",
-                itemListElement: [
-                  {
-                    "@type": "OfferCatalog",
-                    name: "Aas & Karpervoer",
-                  },
-                  {
-                    "@type": "OfferCatalog",
-                    name: "Karpermolens & hengels",
-                  },
-                  {
-                    "@type": "OfferCatalog",
-                    name: "CarpGate Voordeelsets",
-                  },
-                  {
-                    "@type": "OfferCatalog",
-                    name: "Dips, boosters en liquids",
-                  },
-                  {
-                    "@type": "OfferCatalog",
-                    name: "Vislijnen & onderlijnen",
-                  },
-                  {
-                    "@type": "OfferCatalog",
-                    name: "End-tackle",
-                  },
-                  {
-                    "@type": "OfferCatalog",
-                    name: "Carp Care",
-                  },
-                  {
-                    "@type": "OfferCatalog",
-                    name: "Beetmelders & toebehoren",
-                  },
-                  {
-                    "@type": "OfferCatalog",
-                    name: "Pods & sticks",
-                  },
-                  {
-                    "@type": "OfferCatalog",
-                    name: "Kleding",
-                  },
-                  {
-                    "@type": "OfferCatalog",
-                    name: "Nachtvissen",
-                  },
-                  {
-                    "@type": "OfferCatalog",
-                    name: "Opbergen",
-                  },
-                  {
-                    "@type": "OfferCatalog",
-                    name: "Accessories",
-                  },
-                ],
-              },
-            }),
-          }}
-        />
-      </head>
-      <body className="min-h-screen flex flex-col bg-bg-primary text-text-primary antialiased font-[family-name:var(--font-manrope)]">
         {GTM_IDS.map((id) => (
           <noscript key={id}>
             <iframe
@@ -386,7 +249,6 @@ export default async function LocaleLayout({ children, params }) {
           </CartProvider>
         </NextIntlClientProvider>
 
-    
         {GTM_IDS.map((id) => (
           <Script
             key={id}

@@ -18,11 +18,20 @@ import PromoSection from "@/components/ui/Promosection";
 import ImporterBanner from "@/components/sections/ImporterBanner";
 import SeoText from "@/components/sections/SeoText";
 import PartnersSection from "@/components/sections/PartnerSection";
+import { buildMetadata } from "@/lib/seo";
+import JsonLd from "@/components/seo/JsonLd";
+import { organizationJsonLd } from "@/lib/jsonld";
 
 export async function generateMetadata({ params }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "hero" });
-  return { title: t("title") };
+
+  return buildMetadata({
+    locale,
+    path: "",
+    title: t("title"),
+    description: t("metaDescription"),
+  });
 }
 
 export default async function HomePage({ params }) {
@@ -42,6 +51,7 @@ export default async function HomePage({ params }) {
 
   return (
     <>
+      <JsonLd data={organizationJsonLd()} />
       <Hero locale={locale} />
       <ImporterBanner locale={locale} />
 

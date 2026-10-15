@@ -1,4 +1,5 @@
 import { getProducts } from "@/lib/api";
+import { BASE_URL } from "@/lib/seo";
 
 export async function GET() {
   const allProducts = [];
@@ -30,7 +31,7 @@ export async function GET() {
       <g:id>${p.id}</g:id>
       <g:title><![CDATA[${p.name}]]></g:title>
       <g:description><![CDATA[${description || p.name}]]></g:description>
-      <g:link>https://carpgate.com/product/${p.slug}</g:link>
+      <g:link>${BASE_URL}/product/${p.slug}</g:link>
       <g:image_link>${image}</g:image_link>
       <g:availability>in stock</g:availability>
       <g:price>${price} EUR</g:price>
@@ -45,7 +46,7 @@ export async function GET() {
 <rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
   <channel>
     <title>CarpGate Product Feed</title>
-    <link>https://carpgate.com</link>
+    <link>${BASE_URL}</link>
     <description>CarpGate product catalogue</description>
 ${items}
   </channel>

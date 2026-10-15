@@ -1,5 +1,6 @@
-import { getPage } from "@/lib/api";
+import { getPage, decodeHtml } from "@/lib/api";
 import { wpSlug } from "@/lib/slugs";
+import { buildMetadata, pickDescription, DEFAULT_DESC } from "@/lib/seo";
 import { notFound } from "next/navigation";
 
 const EXCLUDED_PAGES = [
@@ -13,13 +14,34 @@ const EXCLUDED_PAGES = [
   "bedankt",
 ];
 
+const EN_PUBLIC_PATHS = {
+  privacybeleid: "privacy-policy",
+  verzendbeleid: "shipping-policy",
+  "algemene-voorwaarden": "general-conditions",
+  "wettelijke-kennisgeving": "legal-notice",
+  terugbetalingsbeleid: "refund-policy",
+};
+
 export async function generateMetadata({ params }) {
   const { locale, page } = await params;
   if (EXCLUDED_PAGES.includes(page)) return {};
   const slug = wpSlug(page, locale);
   const data = await getPage(slug, locale);
   if (!data) return {};
-  return { title: data.title?.rendered };
+
+  const publicSlug = locale === "en" ? EN_PUBLIC_PATHS[page] || page : page;
+
+  return buildMetadata({
+    locale,
+    path: `/${publicSlug}`,
+    title: data.meta_title || decodeHtml(data.title?.rendered),
+    description: pickDescription(
+      data.meta_description,
+      data.excerpt?.rendered,
+      data.content?.rendered,
+      DEFAULT_DESC[locale],
+    ),
+  });
 }
 
 export default async function StaticPage({ params }) {

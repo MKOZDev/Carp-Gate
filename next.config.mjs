@@ -1,12 +1,33 @@
 import createNextIntlPlugin from "next-intl/plugin";
+import { CATEGORY_REDIRECTS, OTHER_REDIRECTS } from "./lib/redirects.js";
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.js");
 
 const nextConfig = {
   async redirects() {
+    const fromCategories = CATEGORY_REDIRECTS.flatMap(([from, to]) => [
+      {
+        source: `/category/${from}`,
+        destination: `/category/${to}`,
+        statusCode: 301,
+      },
+      {
+        source: `/en/category/${from}`,
+        destination: `/en/category/${to}`,
+        statusCode: 301,
+      },
+    ]);
+
+    const fromOther = OTHER_REDIRECTS.flatMap(([from, to]) => [
+      { source: from, destination: to, statusCode: 301 },
+      { source: `/en${from}`, destination: `/en${to}`, statusCode: 301 },
+    ]);
+
     return [
-      { source: "/shop", destination: "/", permanent: true },
-      { source: "/en/shop", destination: "/en", permanent: true },
+      { source: "/shop", destination: "/", statusCode: 301 },
+      { source: "/en/shop", destination: "/en", statusCode: 301 },
+      ...fromCategories,
+      ...fromOther,
     ];
   },
   async rewrites() {
