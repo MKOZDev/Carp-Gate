@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -7,32 +8,63 @@ export default function Pagination({
   totalPages,
   basePath,
   extraParams = "",
+  onPageChange,
 }) {
   const router = useRouter();
 
-  function goToPage(pageNum) {
-    const base = extraParams
+  function hrefFor(pageNum) {
+    if (pageNum === 1) {
+      return extraParams ? `${basePath}?${extraParams}` : basePath;
+    }
+    return extraParams
       ? `${basePath}?${extraParams}&page=${pageNum}`
       : `${basePath}?page=${pageNum}`;
-    const url =
-      pageNum === 1
-        ? extraParams
-          ? `${basePath}?${extraParams}`
-          : basePath
-        : base;
-    router.push(url);
+  }
+
+  function handleClick(e, pageNum) {
+    // Ctrl/Cmd/Shift/środkowy przycisk: pozwól otworzyć w nowej karcie
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) {
+      return;
+    }
+    e.preventDefault();
+
+    if (onPageChange) {
+      onPageChange(pageNum);
+      return;
+    }
+    router.push(hrefFor(pageNum));
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
+  const arrowBase =
+    "w-10 h-10 flex items-center justify-center rounded-full border border-text-secondary/30 text-text-secondary transition-colors";
+  const arrowActive =
+    "cursor-pointer hover:border-text-accent hover:text-text-accent";
+  const arrowDisabled = "opacity-30 cursor-not-allowed";
+
+  const prevDisabled = currentPage <= 1;
+  const nextDisabled = currentPage >= totalPages;
+
   return (
-    <div className="flex items-center justify-center gap-2 mt-12">
-      <button
-        onClick={() => goToPage(currentPage - 1)}
-        disabled={currentPage <= 1}
-        className="w-10 h-10 flex items-center justify-center rounded-full cursor-pointer border border-text-secondary/30 text-text-secondary hover:border-text-accent hover:text-text-accent disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-      >
-        <ChevronLeft size={18} />
-      </button>
+    <nav
+      aria-label="Pagination"
+      className="flex items-center justify-center gap-2 mt-12"
+    >
+      {prevDisabled ? (
+        <span aria-hidden="true" className={`${arrowBase} ${arrowDisabled}`}>
+          <ChevronLeft size={18} />
+        </span>
+      ) : (
+        <Link
+          href={hrefFor(currentPage - 1)}
+          rel="prev"
+          aria-label="Previous page"
+          onClick={(e) => handleClick(e, currentPage - 1)}
+          className={`${arrowBase} ${arrowActive}`}
+        >
+          <ChevronLeft size={18} />
+        </Link>
+      )}
 
       {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => {
         const isVisible =
@@ -58,9 +90,11 @@ export default function Pagination({
         }
 
         return (
-          <button
+          <Link
             key={pageNum}
-            onClick={() => goToPage(pageNum)}
+            href={hrefFor(pageNum)}
+            aria-current={currentPage === pageNum ? "page" : undefined}
+            onClick={(e) => handleClick(e, pageNum)}
             className={`w-10 h-10 flex items-center justify-center cursor-pointer rounded-full text-sm font-medium transition-colors ${
               currentPage === pageNum
                 ? "bg-text-accent text-bg-primary"
@@ -68,17 +102,25 @@ export default function Pagination({
             }`}
           >
             {pageNum}
-          </button>
+          </Link>
         );
       })}
 
-      <button
-        onClick={() => goToPage(currentPage + 1)}
-        disabled={currentPage >= totalPages}
-        className="w-10 h-10 flex items-center justify-center cursor-pointer rounded-full border border-text-secondary/30 text-text-secondary hover:border-text-accent hover:text-text-accent disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-      >
-        <ChevronRight size={18} />
-      </button>
-    </div>
+      {nextDisabled ? (
+        <span aria-hidden="true" className={`${arrowBase} ${arrowDisabled}`}>
+          <ChevronRight size={18} />
+        </span>
+      ) : (
+        <Link
+          href={hrefFor(currentPage + 1)}
+          rel="next"
+          aria-label="Next page"
+          onClick={(e) => handleClick(e, currentPage + 1)}
+          className={`${arrowBase} ${arrowActive}`}
+        >
+          <ChevronRight size={18} />
+        </Link>
+      )}
+    </nav>
   );
 }

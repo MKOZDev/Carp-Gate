@@ -43,7 +43,15 @@ const CLIENT_NAMESPACES = [
   "shipping",
   "shop",
 ];
-
+function uniqueById(list) {
+  const seen = new Set();
+  return (list || []).filter((item) => {
+    if (item?.id == null) return true;
+    if (seen.has(item.id)) return false;
+    seen.add(item.id);
+    return true;
+  });
+}
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
@@ -175,7 +183,7 @@ export default async function LocaleLayout({ children, params }) {
   );
 
   // Navbar dostaje tylko pola potrzebne do menu
-  const navCategories = categories.map(
+  const navCategories = uniqueById(categories).map(
     ({ id, name, slug, parent, count, show_in_menu, image, _nlId }) => ({
       id,
       name,

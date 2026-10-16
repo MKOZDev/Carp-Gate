@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useMemo, useTransition } from "react";
+import { useState, useEffect, useMemo, useRef, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
@@ -204,6 +204,7 @@ export default function ShopClient({
   );
   const [sortBy, setSortBy] = useState(initialFilters.sort_by || "default");
   const [mobileFilters, setMobileFilters] = useState(false);
+  const listTopRef = useRef(null);
 
   // Tylko kategorie główne (parent 0/brak) I widoczne w menu/filtrach
   const topCategories = useMemo(
@@ -301,6 +302,14 @@ export default function ShopClient({
   function handleSortChange(value) {
     setSortBy(value);
     navigate({ sort_by: value !== "default" ? value : "" });
+  }
+
+  function handlePageChange(page) {
+    const q = buildParams({ page: page > 1 ? String(page) : "" });
+    startTransition(() => {
+      router.push(`${basePath}${q ? `?${q}` : ""}`, { scroll: false });
+    });
+    listTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   const filterProps = {
@@ -414,7 +423,7 @@ export default function ShopClient({
             </div>
           </aside>
 
-          <div className="flex-1 min-w-0">
+          <div ref={listTopRef} className="flex-1 min-w-0 scroll-mt-28">
             {/* Pasek nad produktami */}
             <div className="hidden lg:flex items-center justify-between mb-6">
               {/* Licznik — ukryj podczas loading */}
@@ -463,6 +472,7 @@ export default function ShopClient({
                     totalPages={totalPages}
                     basePath={basePath}
                     extraParams={buildParams()}
+                    onPageChange={handlePageChange}
                   />
                 )}
               </>
